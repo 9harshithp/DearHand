@@ -3,9 +3,9 @@
 -- ========================================================
 
 -- Passwords hashed with BCrypt (Cost 10)
--- 'Admin@123' -> $2a$10$w.p8pGjD7nS7K6rT.5d1..g2vW9Z2S9mP2.4T7/O3jF5P2i8O4eKy
--- 'Family@123' -> $2a$10$f3aF.w2Q/9Rj0K5m1D1Nze.3p9F7y2M4v7Q6W8e0O2r4T6y8U0iWe
--- 'Helper@123' -> $2a$10$h7bH.x4S/1Tk2M7p3F3Pbg.5r1H9a4O6x9S8Y0g2Q4t6V8a0W2kYe
+-- 'Admin@123' -> $2a$10$HbzEL/ccGuZTT3RJ4mg4m.HBwdrdDmIOgI.LOs8j03YWiy0uRigeC
+-- 'Family@123' -> $2a$10$syd/NUB.nTrcoFSvdgvNF.zDmLq9moUztppRsQYvHyS1KAuGVU9Oy
+-- 'Helper@123' -> $2a$10$5NIDLolXtwcdafxtgy.5S.4nY9F.PvgKAgNXNvRbeIjJk1WRW2Gh2
 
 -- 1. Insert Initial Admin
 INSERT INTO users (id, role, name, phone, email, password_hash, status)
@@ -15,7 +15,7 @@ VALUES (
     'DearHand Admin',
     '+919876543210',
     'admin@dearhand.in',
-    '$2a$10$w.p8pGjD7nS7K6rT.5d1..g2vW9Z2S9mP2.4T7/O3jF5P2i8O4eKy',
+    '$2a$10$HbzEL/ccGuZTT3RJ4mg4m.HBwdrdDmIOgI.LOs8j03YWiy0uRigeC',
     'ACTIVE'
 ) ON DUPLICATE KEY UPDATE email=email;
 
@@ -35,7 +35,7 @@ VALUES (
     'Rohan Rao',
     '+919880011223',
     'rohan.rao@example.com',
-    '$2a$10$f3aF.w2Q/9Rj0K5m1D1Nze.3p9F7y2M4v7Q6W8e0O2r4T6y8U0iWe',
+    '$2a$10$syd/NUB.nTrcoFSvdgvNF.zDmLq9moUztppRsQYvHyS1KAuGVU9Oy',
     'ACTIVE'
 ) ON DUPLICATE KEY UPDATE email=email;
 
@@ -62,7 +62,7 @@ VALUES (
     'Suresh Kumar',
     '+919741122334',
     'suresh.mysuru@example.com',
-    '$2a$10$h7bH.x4S/1Tk2M7p3F3Pbg.5r1H9a4O6x9S8Y0g2Q4t6V8a0W2kYe',
+    '$2a$10$5NIDLolXtwcdafxtgy.5S.4nY9F.PvgKAgNXNvRbeIjJk1WRW2Gh2',
     'ACTIVE'
 ) ON DUPLICATE KEY UPDATE email=email;
 
