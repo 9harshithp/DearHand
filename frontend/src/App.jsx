@@ -5,6 +5,9 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import HelperOnboardingPage from './pages/HelperOnboardingPage';
 import AdminHelperVerificationPage from './pages/AdminHelperVerificationPage';
+import ParentProfilesPage from './pages/ParentProfilesPage';
+import NewBookingPage from './pages/NewBookingPage';
+import BookingDetailPage from './pages/BookingDetailPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import {
   HeartHandshake,
@@ -221,7 +224,13 @@ function HomeOverview({ setActiveView }) {
 
 function MainApp() {
   const [activeView, setActiveView] = useState('home');
+  const [selectedBookingId, setSelectedBookingId] = useState(null);
   const { isAuthenticated } = useAuth();
+
+  const handleOpenBookingDetail = (id) => {
+    setSelectedBookingId(id);
+    setActiveView('booking-detail');
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
@@ -249,6 +258,44 @@ function MainApp() {
             <DashboardPage
               onNavigateHelperOnboarding={() => setActiveView('helper-onboarding')}
               onNavigateAdminVerification={() => setActiveView('admin-verification')}
+              onNavigateNewBooking={() => setActiveView('new-booking')}
+              onNavigateParents={() => setActiveView('parents')}
+              onNavigateBookingDetail={handleOpenBookingDetail}
+            />
+          </ProtectedRoute>
+        )}
+        {activeView === 'parents' && (
+          <ProtectedRoute
+            allowedRoles={['FAMILY', 'ADMIN']}
+            onNavigateLogin={() => setActiveView('login')}
+            onNavigateDashboard={() => setActiveView('dashboard')}
+          >
+            <ParentProfilesPage
+              onBack={() => setActiveView('dashboard')}
+            />
+          </ProtectedRoute>
+        )}
+        {activeView === 'new-booking' && (
+          <ProtectedRoute
+            allowedRoles={['FAMILY']}
+            onNavigateLogin={() => setActiveView('login')}
+            onNavigateDashboard={() => setActiveView('dashboard')}
+          >
+            <NewBookingPage
+              onBack={() => setActiveView('dashboard')}
+              onNavigateAddParent={() => setActiveView('parents')}
+              onBookingCreated={(id) => handleOpenBookingDetail(id)}
+            />
+          </ProtectedRoute>
+        )}
+        {activeView === 'booking-detail' && (
+          <ProtectedRoute
+            onNavigateLogin={() => setActiveView('login')}
+            onNavigateDashboard={() => setActiveView('dashboard')}
+          >
+            <BookingDetailPage
+              bookingId={selectedBookingId}
+              onBack={() => setActiveView('dashboard')}
             />
           </ProtectedRoute>
         )}
