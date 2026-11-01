@@ -39,3 +39,11 @@ razorpay:
   keySecret: ${RAZORPAY_KEY_SECRET:test_secret_demo12345}
   webhookSecret: ${RAZORPAY_WEBHOOK_SECRET:test_webhook_secret_dearhand}
 
+dearhand:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:*}
+  rate-limiting:
+    enabled: ${RATE_LIMITING_ENABLED:true}
+    limit-per-minute: ${RATE_LIMITING_LIMIT_PER_MINUTE:15}
+
+

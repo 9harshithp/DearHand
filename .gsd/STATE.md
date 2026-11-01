@@ -1,6 +1,6 @@
 ---
 phase: 10
-status: planning
+status: completed
 last_updated: 2026-11-02
 ---
 
@@ -15,12 +15,12 @@ last_updated: 2026-11-02
 - **Phase 6 (Matching & Acceptance)** completed and committed (`ee8a48e`).
 - **Phase 7 (Payments)** completed and committed (`d173462`).
 - **Phase 8 (Visits and Reviews)** completed and committed (`cd70daa`).
-- **Phase 9 (Notifications and Admin Operations)** completed and verified:
-  - Incident handling endpoints: `GET /api/v1/admin/incidents` (status filter), `PUT /api/v1/admin/incidents/{id}/status` with action notes, audit logging, and automated notification alerts to the reporting user.
-  - Care package catalog & pricing endpoints: `GET /api/v1/admin/packages`, `POST /api/v1/admin/packages`, `PUT /api/v1/admin/packages/{id}` for base price, duration, and active toggle.
-  - Audit trail endpoint: `GET /api/v1/admin/audit-logs` returning chronological sensitive actions and actors.
-  - Multi-channel notification desk: `GET /api/v1/admin/notifications` (outbox log across WhatsApp, SMS, Email, In-App).
-  - User notification feed: `GET /api/v1/notifications/me`, `PUT /api/v1/notifications/{id}/read`, `POST /api/v1/notifications/mark-all-read`.
-  - Frontend components: `AdminOperationsConsole.jsx` (tabs for Incidents, Packages, Audit, and Notifications) and `NotificationBell.jsx` in the persistent header with real-time badge.
-  - 54/54 backend tests passing (`./mvnw test`), frontend build clean (`npm run build`).
-- Next: **Prompt 10: Hardening, Security Audit & Launch**.
+- **Phase 9 (Notifications and Admin Operations)** completed and committed (`3f528ad`).
+- **Phase 10 (Hardening, Security Audit & Launch)** completed and verified:
+  - Sliding-window IP rate limiter (`RateLimitingFilter.java`) protecting `/api/v1/auth/login` and `/api/v1/auth/register` with HTTP 429 and `Retry-After: 60`.
+  - Comprehensive security headers (`X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Strict-Transport-Security: max-age=31536000; includeSubDomains`).
+  - Configurable CORS allowed origins via environment variable `CORS_ALLOWED_ORIGINS`.
+  - Production Deployment & Operations Runbook written in `docs/DEPLOYMENT.md`.
+  - Complete automated test suite: 57/57 tests passing across all 11 test suites.
+  - Frontend production bundle built cleanly with Vite.
+- **Overall Build Plan:** 100% Complete. Ready for pilot launch in Mysuru!
