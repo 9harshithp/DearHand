@@ -6,15 +6,134 @@
   html {
     font-size: 16px;
     font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    scroll-behavior: smooth;
   }
 
   body {
     @apply bg-slate-50 text-slate-900;
     -webkit-tap-highlight-color: transparent;
+    min-height: 100dvh;
   }
 
-  /* Accessibility standard: minimum 44px tap targets for interactive buttons & links */
+  /* Accessibility standard: minimum 44px tap targets for interactive elements */
   button, a, input, select, textarea {
     @apply min-h-[44px];
   }
 }
+
+/* ==========================================================================
+   1. Mobile Viewport Media Query (<= 640px)
+   Enhanced accessibility for elderly family members & on-the-go helpers
+   ========================================================================== */
+@media screen and (max-width: 640px) {
+  html {
+    /* Slightly increased base size on phones for maximum legibility */
+    font-size: 17px;
+  }
+
+  /* Increase touch targets to 48px for effortless tapping on mobile screens */
+  button, a, input, select, textarea {
+    min-height: 48px;
+  }
+
+  /* Fluid typography scaling */
+  h1 {
+    font-size: clamp(1.75rem, 6vw + 0.5rem, 2.5rem);
+    line-height: 1.15;
+  }
+
+  h2 {
+    font-size: clamp(1.4rem, 4.5vw + 0.5rem, 2rem);
+    line-height: 1.2;
+  }
+
+  /* Full-bleed modals with bottom-sheet appearance on mobile */
+  .fixed.inset-0 > div {
+    width: 100% !important;
+    max-height: 94dvh;
+    overflow-y: auto;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    margin-top: auto;
+  }
+
+  /* Prevent horizontal overflow on compact screens */
+  .max-w-6xl, .max-w-5xl, .max-w-4xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* ==========================================================================
+   2. Tablet & Desktop Media Query (>= 1024px)
+   ========================================================================== */
+@media screen and (min-width: 1024px) {
+  /* Subtle smooth backdrop transitions */
+  .hover-card-elevate {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-card-elevate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+  }
+}
+
+/* ==========================================================================
+   3. High Contrast Media Query (prefers-contrast: more)
+   Meets WCAG AAA compliance for vision-impaired and elder family members
+   ========================================================================== */
+@media (prefers-contrast: more) {
+  body {
+    background-color: #ffffff;
+    color: #000000;
+  }
+
+  button, input, select, textarea, div[class*="border"] {
+    border-color: #000000 !important;
+    border-width: 2px !important;
+  }
+
+  .text-slate-600, .text-slate-500 {
+    color: #1e293b !important; /* darker for high contrast readability */
+  }
+}
+
+/* ==========================================================================
+   4. Reduced Motion Media Query (prefers-reduced-motion: reduce)
+   Disables pulsing animations for users with vestibular sensitivity
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ==========================================================================
+   5. Print Media Query
+   Clean receipt and booking confirmation formatting for physical printing
+   ========================================================================== */
+@media print {
+  header, footer, nav, button, .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-size: 12pt;
+  }
+
+  .shadow-sm, .shadow-md, .shadow-xl, .shadow-2xl {
+    box-shadow: none !important;
+  }
+
+  .border-2, .border {
+    border: 1px solid #cccccc !important;
+  }
+}
+
