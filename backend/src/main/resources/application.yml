@@ -33,3 +33,9 @@ management:
 jwt:
   secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
   expirationMs: ${JWT_EXPIRATION_MS:86400000}
+
+razorpay:
+  keyId: ${RAZORPAY_KEY_ID:rzp_test_dearhanddemo}
+  keySecret: ${RAZORPAY_KEY_SECRET:test_secret_demo12345}
+  webhookSecret: ${RAZORPAY_WEBHOOK_SECRET:test_webhook_secret_dearhand}
+

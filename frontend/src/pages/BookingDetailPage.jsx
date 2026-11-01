@@ -16,6 +16,8 @@ import {
   CreditCard,
   Ban
 } from 'lucide-react';
+import PaymentModal from '../components/PaymentModal';
+import PaymentReceiptModal from '../components/PaymentReceiptModal';
 
 export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment }) {
   const { user } = useAuth();
@@ -27,6 +29,8 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
   const [respondingToMatch, setRespondingToMatch] = useState(false);
   const [showDeclineModal, setShowDeclineModal] = useState(false);
   const [declineReason, setDeclineReason] = useState('');
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showReceiptModal, setShowReceiptModal] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
@@ -286,7 +290,7 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
             </div>
           </div>
           <button
-            onClick={() => onNavigatePayment && onNavigatePayment(booking.id)}
+            onClick={() => setShowPaymentModal(true)}
             className="px-6 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-base rounded-2xl min-h-[48px] shadow-md whitespace-nowrap"
           >
             Proceed to Pay ₹{booking.totalAmount} &rarr;
@@ -377,10 +381,21 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
 
           {booking.status === 'ACCEPTED' && booking.paymentStatus === 'PENDING' && (
             <button
-              onClick={() => onNavigatePayment && onNavigatePayment(booking.id)}
-              className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold text-base rounded-xl min-h-[44px] shadow transition-colors"
+              onClick={() => setShowPaymentModal(true)}
+              className="px-6 py-3 bg-teal-600 hover:bg-teal-700 text-white font-bold text-base rounded-xl min-h-[44px] shadow transition-colors flex items-center gap-2"
             >
+              <CreditCard className="w-5 h-5" />
               Pay ₹{booking.totalAmount} (Razorpay) &rarr;
+            </button>
+          )}
+
+          {booking.paymentStatus === 'SUCCESS' && (
+            <button
+              onClick={() => setShowReceiptModal(true)}
+              className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-base rounded-xl min-h-[44px] border border-slate-300 transition-colors flex items-center gap-2"
+            >
+              <FileText className="w-5 h-5 text-teal-600" />
+              View Official Receipt
             </button>
           )}
         </div>
@@ -458,6 +473,30 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
             </div>
           </div>
         </div>
+      )}
+
+      {/* Razorpay Payment Modal */}
+      {showPaymentModal && (
+        <PaymentModal
+          booking={booking}
+          onClose={() => setShowPaymentModal(false)}
+          onSuccess={(updatedBooking) => {
+            setShowPaymentModal(false);
+            if (updatedBooking) {
+              setBooking(updatedBooking);
+            }
+            setMessage(`Payment confirmed! ₹${booking.totalAmount} paid via Razorpay. Your verified helper is confirmed.`);
+            setShowReceiptModal(true);
+          }}
+        />
+      )}
+
+      {/* Payment Receipt Modal */}
+      {showReceiptModal && (
+        <PaymentReceiptModal
+          bookingId={booking.id}
+          onClose={() => setShowReceiptModal(false)}
+        />
       )}
     </div>
   );

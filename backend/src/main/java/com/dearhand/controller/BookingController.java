@@ -21,6 +21,7 @@ import java.util.List;
 public class BookingController {
 
     private final BookingService bookingService;
+    private final com.dearhand.service.PaymentService paymentService;
 
     @PostMapping
     @PreAuthorize("hasRole('FAMILY')")
@@ -67,4 +68,33 @@ public class BookingController {
         BookingDto updated = bookingService.respondToAssignment(principal, id, request.getAccept(), request.getReason());
         return ResponseEntity.ok(updated);
     }
+
+    @PostMapping("/{id}/pay")
+    @PreAuthorize("hasRole('FAMILY')")
+    public ResponseEntity<com.dearhand.dto.payment.PaymentOrderDto> initiatePayment(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        com.dearhand.dto.payment.PaymentOrderDto order = paymentService.initiatePayment(principal, id);
+        return ResponseEntity.ok(order);
+    }
+
+    @PostMapping("/{id}/verify-payment")
+    @PreAuthorize("hasRole('FAMILY')")
+    public ResponseEntity<BookingDto> verifyPayment(
+            @PathVariable Long id,
+            @Valid @RequestBody com.dearhand.dto.payment.PaymentVerificationRequest request,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        BookingDto confirmed = paymentService.verifyClientPayment(principal, id, request);
+        return ResponseEntity.ok(confirmed);
+    }
+
+    @GetMapping("/{id}/receipt")
+    @PreAuthorize("hasRole('FAMILY') or hasRole('HELPER') or hasRole('ADMIN')")
+    public ResponseEntity<com.dearhand.dto.payment.PaymentReceiptDto> getReceipt(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        com.dearhand.dto.payment.PaymentReceiptDto receipt = paymentService.getReceipt(principal, id);
+        return ResponseEntity.ok(receipt);
+    }
 }
+
