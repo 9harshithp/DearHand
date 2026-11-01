@@ -3,6 +3,8 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import HelperOnboardingPage from './pages/HelperOnboardingPage';
+import AdminHelperVerificationPage from './pages/AdminHelperVerificationPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import {
   HeartHandshake,
@@ -244,7 +246,32 @@ function MainApp() {
             onNavigateLogin={() => setActiveView('login')}
             onNavigateDashboard={() => setActiveView('dashboard')}
           >
-            <DashboardPage />
+            <DashboardPage
+              onNavigateHelperOnboarding={() => setActiveView('helper-onboarding')}
+              onNavigateAdminVerification={() => setActiveView('admin-verification')}
+            />
+          </ProtectedRoute>
+        )}
+        {activeView === 'helper-onboarding' && (
+          <ProtectedRoute
+            allowedRoles={['HELPER', 'ADMIN']}
+            onNavigateLogin={() => setActiveView('login')}
+            onNavigateDashboard={() => setActiveView('dashboard')}
+          >
+            <HelperOnboardingPage
+              onBackToDashboard={() => setActiveView('dashboard')}
+            />
+          </ProtectedRoute>
+        )}
+        {activeView === 'admin-verification' && (
+          <ProtectedRoute
+            allowedRoles={['ADMIN']}
+            onNavigateLogin={() => setActiveView('login')}
+            onNavigateDashboard={() => setActiveView('dashboard')}
+          >
+            <AdminHelperVerificationPage
+              onBackToDashboard={() => setActiveView('dashboard')}
+            />
           </ProtectedRoute>
         )}
       </main>

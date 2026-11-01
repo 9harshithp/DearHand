@@ -15,7 +15,7 @@ import {
   Sparkles
 } from 'lucide-react';
 
-export default function DashboardPage({ onNavigateTest }) {
+export default function DashboardPage({ onNavigateHelperOnboarding, onNavigateAdminVerification }) {
   const { user, logout } = useAuth();
   const [roleTestResult, setRoleTestResult] = useState(null);
   const [roleTestLoading, setRoleTestLoading] = useState(false);
@@ -126,21 +126,39 @@ export default function DashboardPage({ onNavigateTest }) {
 
           <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-base text-slate-700 space-y-2">
             <p>
-              <strong>Next Step:</strong> Upload your Government ID, Driving Licence, and Police Verification Certificate in Phase 4.
+              <strong>Next Step:</strong> Upload your Government ID, Driving Licence, and Police Verification Certificate.
             </p>
             <p className="text-sm text-slate-500">
               Once approved by the admin team, you will start receiving visit requests from families in Mysuru.
             </p>
+            <div className="pt-2">
+              <button
+                onClick={onNavigateHelperOnboarding}
+                className="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-base min-h-[44px] transition-colors"
+              >
+                Complete Application & Upload Documents &rarr;
+              </button>
+            </div>
           </div>
         </section>
       )}
 
       {user?.role === 'ADMIN' && (
         <section className="bg-white border-2 border-slate-200 rounded-3xl p-6 md:p-8 space-y-4">
-          <h3 className="text-2xl font-bold text-slate-900">Operations & Admin Center</h3>
-          <p className="text-base text-slate-600">
-            Manage helper applications, verify original documents, and assign bookings to helpers.
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-2xl font-bold text-slate-900">Operations & Admin Center</h3>
+              <p className="text-base text-slate-600">
+                Manage helper applications, verify original documents, and assign bookings to helpers.
+              </p>
+            </div>
+            <button
+              onClick={onNavigateAdminVerification}
+              className="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-xl text-base min-h-[44px] transition-colors"
+            >
+              Open Helper Verification Console &rarr;
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
             <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl">
               <p className="font-bold text-purple-900 text-lg">Helper Approvals</p>

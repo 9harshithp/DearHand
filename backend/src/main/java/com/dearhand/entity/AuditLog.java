@@ -23,7 +23,7 @@ public class AuditLog {
     @JoinColumn(name = "actor_id")
     private User actor;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 255)
     private String action;
 
     @Column(nullable = false, length = 50)
