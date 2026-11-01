@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-size: 16px;
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Accessibility standard: minimum 44px tap targets for interactive buttons & links */
+  button, a, input, select, textarea {
+    @apply min-h-[44px];
+  }
+}
