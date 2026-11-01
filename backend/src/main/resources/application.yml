@@ -18,7 +18,7 @@ spring:
       hibernate:
         format_sql: true
   flyway:
-    enabled: false
+    enabled: true
     baseline-on-migrate: true
 
 management:
