@@ -1,5 +1,5 @@
 ---
-phase: 3
+phase: 4
 status: ready
 last_updated: 2026-11-01
 ---
@@ -8,11 +8,14 @@ last_updated: 2026-11-01
 
 ## Active Context
 - **Phase 1 (Setup)** completed and committed (`f21fb92`).
-- **Phase 2 (Database)** completed and committed (`e98f1c6`):
-  - Flyway migrations `V1__init_schema.sql` and `V2__seed_initial_data.sql` for all 12 tables.
-  - JPA entities and enums (`User`, `Parent`, `HelperProfile`, `HelperDocument`, `CarePackage`, `Booking`, `Payment`, `VisitLog`, `Review`, `Incident`, `Notification`, `AuditLog`).
-  - Spring Data JPA repositories for all domain models.
-  - Test suite (`RepositoryTests`) with 5 integration tests covering lifecycle, relations, and aggregations passing cleanly (7/7 tests passed).
-- Ready for **Prompt 3: Authentication** (BCrypt, JWT, Spring Security role guards, React login/register, token store, and wrong-role tests).
+- **Phase 2 (Database)** completed and committed (`e98f1c6`).
+- **Phase 3 (Authentication & Security)** completed and committed (`4db611d`):
+  - BCrypt password hashing, JWT token provider and auth filter.
+  - Role-based authorization (`FAMILY`, `HELPER`, `ADMIN`) with Spring `@EnableMethodSecurity`.
+  - Global exception handling for validation, authentication, and access denial.
+  - React frontend `AuthProvider`, token storage, accessible `LoginPage`, `RegisterPage`, and `ProtectedRoute` guard.
+  - Test suite (`AuthSecurityTests`) with 8 integration tests including verification that wrong-role access is denied with `403 Forbidden` (15/15 total tests passed).
+- Ready for **Prompt 4: Helper Onboarding** (Helper profile application, secure document upload, admin document verification, and status transitions: `APPLIED` -> `VERIFIED` -> `APPROVED` -> `SUSPENDED`).
+
 
 
