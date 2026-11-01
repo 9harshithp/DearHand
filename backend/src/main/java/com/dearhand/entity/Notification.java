@@ -24,7 +24,7 @@ public class Notification extends BaseEntity {
     @Column(nullable = false, length = 20)
     private NotificationChannel channel;
 
-    @Column(nullable = false, length = 100)
+    @Column(nullable = false, length = 500)
     private String template;
 
     @Enumerated(EnumType.STRING)

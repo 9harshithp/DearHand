@@ -64,6 +64,36 @@ public class LocalStorageService implements StorageService {
     }
 
     @Override
+    public String storeVisitPhoto(Long bookingId, MultipartFile file) throws IOException {
+        if (file == null || file.isEmpty()) {
+            throw new IllegalArgumentException("Cannot store empty photo");
+        }
+
+        String originalFilename = StringUtils.cleanPath(file.getOriginalFilename() != null ? file.getOriginalFilename() : "photo.jpg");
+        String extension = ".jpg";
+        int dotIdx = originalFilename.lastIndexOf('.');
+        if (dotIdx > 0) {
+            extension = originalFilename.substring(dotIdx);
+        }
+
+        Path visitDir = this.rootLocation.resolve("visits").resolve(String.valueOf(bookingId));
+        Files.createDirectories(visitDir);
+
+        String uniqueFileName = "photo_" + UUID.randomUUID().toString().substring(0, 8) + extension;
+        Path destinationFile = visitDir.resolve(uniqueFileName).normalize();
+
+        if (!destinationFile.getParent().equals(visitDir)) {
+            throw new SecurityException("Cannot store file outside visit directory");
+        }
+
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, destinationFile, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        return "visits/" + bookingId + "/" + uniqueFileName;
+    }
+
+    @Override
     public Resource loadAsResource(String fileKey) throws IOException {
         Path filePath = this.rootLocation.resolve(fileKey).normalize();
         if (!filePath.startsWith(this.rootLocation)) {

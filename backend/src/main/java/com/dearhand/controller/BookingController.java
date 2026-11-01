@@ -22,6 +22,7 @@ public class BookingController {
 
     private final BookingService bookingService;
     private final com.dearhand.service.PaymentService paymentService;
+    private final com.dearhand.service.VisitService visitService;
 
     @PostMapping
     @PreAuthorize("hasRole('FAMILY')")
@@ -95,6 +96,67 @@ public class BookingController {
             @AuthenticationPrincipal UserPrincipal principal) {
         com.dearhand.dto.payment.PaymentReceiptDto receipt = paymentService.getReceipt(principal, id);
         return ResponseEntity.ok(receipt);
+    }
+
+    @PostMapping("/{id}/checkin")
+    @PreAuthorize("hasRole('HELPER')")
+    public ResponseEntity<BookingDto> checkin(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        BookingDto booking = visitService.checkin(principal, id);
+        return ResponseEntity.ok(booking);
+    }
+
+    @PostMapping(value = "/{id}/update", consumes = {"multipart/form-data"})
+    @PreAuthorize("hasRole('HELPER')")
+    public ResponseEntity<BookingDto> updateVisitMultipart(
+            @PathVariable Long id,
+            @RequestParam(value = "notes", required = false) String notes,
+            @RequestParam(value = "photo", required = false) org.springframework.web.multipart.MultipartFile photo,
+            @AuthenticationPrincipal UserPrincipal principal) throws java.io.IOException {
+        BookingDto booking = visitService.updateVisit(principal, id, notes, photo);
+        return ResponseEntity.ok(booking);
+    }
+
+    @PostMapping(value = "/{id}/update", consumes = {"application/json"})
+    @PreAuthorize("hasRole('HELPER')")
+    public ResponseEntity<BookingDto> updateVisitJson(
+            @PathVariable Long id,
+            @RequestBody com.dearhand.dto.visit.VisitUpdateRequest request,
+            @AuthenticationPrincipal UserPrincipal principal) throws java.io.IOException {
+        BookingDto booking = visitService.updateVisit(principal, id, request != null ? request.getNotes() : null, null);
+        return ResponseEntity.ok(booking);
+    }
+
+    @PostMapping("/{id}/checkout")
+    @PreAuthorize("hasRole('HELPER')")
+    public ResponseEntity<BookingDto> checkout(
+            @PathVariable Long id,
+            @RequestBody(required = false) com.dearhand.dto.visit.VisitCheckoutRequest request,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        String notes = request != null ? request.getNotes() : null;
+        BookingDto booking = visitService.checkout(principal, id, notes);
+        return ResponseEntity.ok(booking);
+    }
+
+    @PostMapping("/{id}/review")
+    @PreAuthorize("hasRole('FAMILY')")
+    public ResponseEntity<BookingDto> submitReview(
+            @PathVariable Long id,
+            @Valid @RequestBody com.dearhand.dto.visit.ReviewRequest request,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        BookingDto booking = visitService.submitReview(principal, id, request);
+        return ResponseEntity.ok(booking);
+    }
+
+    @PostMapping("/{id}/emergency")
+    @PreAuthorize("hasRole('FAMILY') or hasRole('HELPER') or hasRole('ADMIN')")
+    public ResponseEntity<com.dearhand.dto.visit.IncidentDto> raiseEmergency(
+            @PathVariable Long id,
+            @Valid @RequestBody com.dearhand.dto.visit.EmergencyAlertRequest request,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        com.dearhand.dto.visit.IncidentDto incident = visitService.raiseEmergency(principal, id, request);
+        return ResponseEntity.ok(incident);
     }
 }
 

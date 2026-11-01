@@ -18,6 +18,9 @@ import {
 } from 'lucide-react';
 import PaymentModal from '../components/PaymentModal';
 import PaymentReceiptModal from '../components/PaymentReceiptModal';
+import HelperVisitConsole from '../components/HelperVisitConsole';
+import ReviewModal from '../components/ReviewModal';
+import EmergencyAlertModal from '../components/EmergencyAlertModal';
 
 export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment }) {
   const { user } = useAuth();
@@ -31,6 +34,8 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
   const [declineReason, setDeclineReason] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [showEmergencyModal, setShowEmergencyModal] = useState(false);
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
@@ -161,6 +166,15 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
           </div>
 
           <div className="flex items-center gap-3">
+            {['PAID', 'IN_PROGRESS'].includes(booking.status) && (
+              <button
+                type="button"
+                onClick={() => setShowEmergencyModal(true)}
+                className="px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 border-2 border-red-300 font-bold text-sm rounded-xl min-h-[44px] flex items-center gap-1.5 transition-colors"
+              >
+                <AlertCircle className="w-4 h-4 text-red-600" /> SOS Emergency
+              </button>
+            )}
             <span
               className={`px-4 py-1.5 rounded-full text-base font-extrabold uppercase tracking-wide border ${
                 booking.status === 'COMPLETED'
@@ -298,6 +312,33 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
         </div>
       )}
 
+      {/* Helper Live Visit Controls */}
+      {user?.role === 'HELPER' && ['PAID', 'IN_PROGRESS'].includes(booking.status) && (
+        <HelperVisitConsole
+          booking={booking}
+          onBookingUpdated={(updated) => setBooking(updated)}
+          onOpenEmergency={() => setShowEmergencyModal(true)}
+        />
+      )}
+
+      {/* Family Review Prompt Banner */}
+      {user?.role === 'FAMILY' && booking.status === 'COMPLETED' && !booking.rating && (
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border-2 border-amber-400 rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="space-y-1">
+            <h4 className="text-2xl font-black text-slate-900">How was your parent's care visit?</h4>
+            <p className="text-base text-slate-700">
+              {booking.helper?.name || 'Your stand-in helper'} has completed the scheduled visit for <strong>{booking.parent?.name}</strong>. Please leave a rating to help other families.
+            </p>
+          </div>
+          <button
+            onClick={() => setShowReviewModal(true)}
+            className="px-6 py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-extrabold text-base rounded-2xl min-h-[48px] shadow-md whitespace-nowrap"
+          >
+            Rate & Review Helper &rarr;
+          </button>
+        </div>
+      )}
+
       {/* Main Details Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Parent Details Card */}
@@ -356,6 +397,82 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
         <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm space-y-2">
           <h3 className="text-lg font-bold text-slate-900">Task Instructions for Visit</h3>
           <p className="text-base text-slate-700 whitespace-pre-wrap">{booking.taskNotes}</p>
+        </div>
+      )}
+
+      {/* Live Visit Activity & Log Card */}
+      {(booking.checkinAt || booking.visitNotes || booking.photoKeys) && (
+        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+          <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-teal-600" /> Visit Activity & Stand-in Log
+          </h3>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
+              <span className="text-xs uppercase font-bold text-slate-500">Check-In Time</span>
+              <p className="font-bold text-slate-900 text-lg mt-0.5">
+                {booking.checkinAt
+                  ? new Date(booking.checkinAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  : 'Pending arrival'}
+              </p>
+            </div>
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl">
+              <span className="text-xs uppercase font-bold text-slate-500">Check-Out Time</span>
+              <p className="font-bold text-slate-900 text-lg mt-0.5">
+                {booking.checkoutAt
+                  ? new Date(booking.checkoutAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  : booking.status === 'IN_PROGRESS'
+                  ? 'Currently in progress...'
+                  : 'Scheduled'}
+              </p>
+            </div>
+          </div>
+
+          {booking.visitNotes && (
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Helper Care Log & Updates
+              </p>
+              <p className="text-base text-slate-800 whitespace-pre-wrap">{booking.visitNotes}</p>
+            </div>
+          )}
+
+          {booking.photoKeys && (
+            <div className="space-y-2">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500">
+                Uploaded Slips & Verification Photos
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {booking.photoKeys.split(',').map((key, idx) => (
+                  <span
+                    key={idx}
+                    className="px-3.5 py-2 bg-teal-50 border border-teal-200 rounded-xl text-xs font-bold text-teal-900 flex items-center gap-1.5"
+                  >
+                    📷 Photo #{idx + 1} ({key.split('/').pop()})
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Review Card */}
+      {booking.rating && (
+        <div className="bg-white border-2 border-amber-200 rounded-3xl p-6 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-amber-500" /> Family Review
+            </h3>
+            <span className="text-base font-black text-amber-900 bg-amber-100 px-3.5 py-1 rounded-full border border-amber-300">
+              ⭐ {booking.rating} / 5 Stars
+            </span>
+          </div>
+          {booking.reviewComment && (
+            <p className="text-base text-slate-800 italic bg-amber-50/60 p-4 rounded-2xl border border-amber-200">
+              "{booking.reviewComment}"
+            </p>
+          )}
         </div>
       )}
 
@@ -496,6 +613,32 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
         <PaymentReceiptModal
           bookingId={booking.id}
           onClose={() => setShowReceiptModal(false)}
+        />
+      )}
+
+      {/* Post-Visit Review Modal */}
+      {showReviewModal && (
+        <ReviewModal
+          bookingId={booking.id}
+          helperName={booking.helper?.name}
+          onClose={() => setShowReviewModal(false)}
+          onSuccess={(updated) => {
+            setShowReviewModal(false);
+            if (updated) setBooking(updated);
+            setMessage('Thank you! Your rating and review have been submitted.');
+          }}
+        />
+      )}
+
+      {/* Emergency SOS Modal */}
+      {showEmergencyModal && (
+        <EmergencyAlertModal
+          booking={booking}
+          onClose={() => setShowEmergencyModal(false)}
+          onSuccess={(incident) => {
+            setShowEmergencyModal(false);
+            setMessage(`🚨 Emergency Alert #${incident.id} broadcasted! Operations and emergency contacts have been notified.`);
+          }}
         />
       )}
     </div>
