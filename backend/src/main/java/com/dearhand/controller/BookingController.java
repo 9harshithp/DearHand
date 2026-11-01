@@ -57,4 +57,14 @@ public class BookingController {
         BookingDto cancelled = bookingService.cancelBooking(principal, id, reason);
         return ResponseEntity.ok(cancelled);
     }
+
+    @PostMapping("/{id}/accept")
+    @PreAuthorize("hasRole('HELPER')")
+    public ResponseEntity<BookingDto> respondToAssignment(
+            @PathVariable Long id,
+            @Valid @RequestBody com.dearhand.dto.booking.HelperAcceptanceRequest request,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        BookingDto updated = bookingService.respondToAssignment(principal, id, request.getAccept(), request.getReason());
+        return ResponseEntity.ok(updated);
+    }
 }

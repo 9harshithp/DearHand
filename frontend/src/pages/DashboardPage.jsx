@@ -21,6 +21,7 @@ import {
 export default function DashboardPage({
   onNavigateHelperOnboarding,
   onNavigateAdminVerification,
+  onNavigateAdminBookings,
   onNavigateNewBooking,
   onNavigateParents,
   onNavigateBookingDetail,
@@ -289,26 +290,41 @@ export default function DashboardPage({
                 Manage helper applications, verify original documents, and assign bookings to helpers.
               </p>
             </div>
-            <button
-              onClick={onNavigateAdminVerification}
-              className="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-xl text-base min-h-[44px] transition-colors self-start sm:self-auto"
-            >
-              Helper Verification Console &rarr;
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                onClick={onNavigateAdminBookings}
+                className="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-base min-h-[44px] shadow-sm transition-colors"
+              >
+                Matching & Bookings Board &rarr;
+              </button>
+              <button
+                onClick={onNavigateAdminVerification}
+                className="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-xl text-base min-h-[44px] transition-colors"
+              >
+                Helper Verification Console &rarr;
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl">
-              <p className="font-bold text-purple-900 text-lg">Total Bookings</p>
-              <p className="text-2xl font-black text-purple-950 mt-1">{bookings.length}</p>
+            <div
+              onClick={onNavigateAdminBookings}
+              className="p-5 bg-teal-50 border-2 border-teal-200 hover:border-teal-500 rounded-2xl cursor-pointer transition-all"
+            >
+              <p className="font-bold text-teal-900 text-lg">Matching Board</p>
+              <p className="text-2xl font-black text-teal-950 mt-1">{bookings.length} Bookings</p>
+              <p className="text-sm text-teal-700 mt-1">Assign bookings to available approved helpers &rarr;</p>
             </div>
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl">
-              <p className="font-bold text-purple-900 text-lg">Matching Board</p>
-              <p className="text-sm text-purple-700">Assign bookings to available helpers</p>
+            <div
+              onClick={onNavigateAdminVerification}
+              className="p-5 bg-purple-50 border-2 border-purple-200 hover:border-purple-500 rounded-2xl cursor-pointer transition-all"
+            >
+              <p className="font-bold text-purple-900 text-lg">Helper Verification</p>
+              <p className="text-sm text-purple-700 mt-1">Review licenses and background checks &rarr;</p>
             </div>
-            <div className="p-4 bg-purple-50 border border-purple-200 rounded-xl">
-              <p className="font-bold text-purple-900 text-lg">Audit Logs</p>
-              <p className="text-sm text-purple-700">Track all sensitive actions</p>
+            <div className="p-5 bg-slate-50 border-2 border-slate-200 rounded-2xl">
+              <p className="font-bold text-slate-900 text-lg">Audit Trail</p>
+              <p className="text-sm text-slate-600 mt-1">State transitions and sensitive actions logged</p>
             </div>
           </div>
         </section>

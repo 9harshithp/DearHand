@@ -34,6 +34,7 @@ public class BookingService {
     private final UserRepository userRepository;
     private final HelperProfileRepository helperProfileRepository;
     private final PaymentRepository paymentRepository;
+    private final NotificationRepository notificationRepository;
     private final AuditLogRepository auditLogRepository;
     private final ParentService parentService;
     private final PackageService packageService;
@@ -148,6 +149,135 @@ public class BookingService {
 
         log.info("Booking #{} cancelled by {}. Reason: {}", bookingId, principal.getEmail(), reason);
         return mapToDto(saved);
+    }
+
+    @Transactional
+    public BookingDto assignHelper(UserPrincipal adminPrincipal, Long bookingId, Long helperId) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found with ID: " + bookingId));
+
+        if (booking.getStatus() != BookingStatus.REQUESTED && booking.getStatus() != BookingStatus.MATCHED) {
+            throw new IllegalStateException("Helper can only be assigned to bookings in REQUESTED or MATCHED status. Current status: " + booking.getStatus());
+        }
+
+        HelperProfile helper = helperProfileRepository.findById(helperId)
+                .orElseThrow(() -> new IllegalArgumentException("Helper profile not found with ID: " + helperId));
+
+        // Security & trust rule: Only approved helpers can be assigned
+        if (helper.getStatus() != com.dearhand.enums.HelperStatus.APPROVED) {
+            throw new IllegalStateException("Only approved helpers can be assigned to bookings. Helper #" + helperId + " has status: " + helper.getStatus());
+        }
+
+        booking.setHelper(helper);
+        booking.setStatus(BookingStatus.MATCHED);
+        Booking saved = bookingRepository.save(booking);
+
+        // Notify Helper via WhatsApp/SMS
+        Notification helperNotif = Notification.builder()
+                .user(helper.getUser())
+                .channel(com.dearhand.enums.NotificationChannel.WHATSAPP)
+                .template("NEW_VISIT_REQUEST: Booking #" + bookingId + " for " + booking.getParent().getName())
+                .status(com.dearhand.enums.NotificationStatus.SENT)
+                .sentAt(Instant.now())
+                .build();
+        notificationRepository.save(helperNotif);
+
+        // Audit Log
+        User admin = userRepository.findById(adminPrincipal.getId()).orElse(null);
+        AuditLog audit = AuditLog.builder()
+                .actor(admin)
+                .action("ASSIGN_HELPER: Matched Helper #" + helperId + " (" + helper.getUser().getName() + ") to Booking #" + bookingId)
+                .entity("Booking")
+                .entityId(bookingId)
+                .build();
+        auditLogRepository.save(audit);
+
+        log.info("Admin {} assigned approved helper #{} to booking #{}", adminPrincipal.getEmail(), helperId, bookingId);
+        return mapToDto(saved);
+    }
+
+    @Transactional
+    public BookingDto respondToAssignment(UserPrincipal helperPrincipal, Long bookingId, Boolean accept, String reason) {
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new IllegalArgumentException("Booking not found with ID: " + bookingId));
+
+        HelperProfile helper = helperProfileRepository.findByUserId(helperPrincipal.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Helper profile not found for this user"));
+
+        // Check ownership: current booking's helper must be this helper
+        if (booking.getHelper() == null || !booking.getHelper().getId().equals(helper.getId())) {
+            throw new AccessDeniedException("This booking assignment does not belong to you");
+        }
+
+        if (booking.getStatus() != BookingStatus.MATCHED) {
+            throw new IllegalStateException("Booking is not awaiting helper acceptance. Current status: " + booking.getStatus());
+        }
+
+        if (Boolean.TRUE.equals(accept)) {
+            booking.setStatus(BookingStatus.ACCEPTED);
+            Booking saved = bookingRepository.save(booking);
+
+            // Notify Family: Helper has accepted, please pay to confirm
+            Notification familyNotif = Notification.builder()
+                    .user(booking.getFamily())
+                    .channel(com.dearhand.enums.NotificationChannel.WHATSAPP)
+                    .template("HELPER_ACCEPTED: Helper " + helper.getUser().getName() + " accepted booking #" + bookingId + ". Please complete payment to confirm.")
+                    .status(com.dearhand.enums.NotificationStatus.SENT)
+                    .sentAt(Instant.now())
+                    .build();
+            notificationRepository.save(familyNotif);
+
+            // Audit log
+            AuditLog audit = AuditLog.builder()
+                    .actor(helper.getUser())
+                    .action("HELPER_ACCEPTED: Booking #" + bookingId + " accepted by helper")
+                    .entity("Booking")
+                    .entityId(bookingId)
+                    .build();
+            auditLogRepository.save(audit);
+
+            log.info("Helper {} accepted booking #{}", helperPrincipal.getEmail(), bookingId);
+            return mapToDto(saved);
+        } else {
+            // Helper declined: Unset helper and return to REQUESTED in admin queue
+            booking.setHelper(null);
+            booking.setStatus(BookingStatus.REQUESTED);
+            Booking saved = bookingRepository.save(booking);
+
+            // Audit log
+            AuditLog audit = AuditLog.builder()
+                    .actor(helper.getUser())
+                    .action("HELPER_DECLINED: Booking #" + bookingId + " returned to admin queue. Reason: " + (reason != null ? reason : "None provided"))
+                    .entity("Booking")
+                    .entityId(bookingId)
+                    .build();
+            auditLogRepository.save(audit);
+
+            log.info("Helper {} declined booking #{}. Returned to admin queue. Reason: {}", helperPrincipal.getEmail(), bookingId, reason);
+            return mapToDto(saved);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public com.dearhand.dto.booking.AdminBookingBoardDto getAdminBookingBoard() {
+        List<Booking> all = bookingRepository.findAll(Sort.by(Sort.Direction.DESC, "scheduledStart"));
+
+        return com.dearhand.dto.booking.AdminBookingBoardDto.builder()
+                .unassignedQueue(filterAndMap(all, BookingStatus.REQUESTED))
+                .awaitingAcceptance(filterAndMap(all, BookingStatus.MATCHED))
+                .acceptedAndPendingPayment(filterAndMap(all, BookingStatus.ACCEPTED))
+                .paidAndReady(filterAndMap(all, BookingStatus.PAID))
+                .inProgress(filterAndMap(all, BookingStatus.IN_PROGRESS))
+                .completed(filterAndMap(all, BookingStatus.COMPLETED))
+                .cancelled(filterAndMap(all, BookingStatus.CANCELLED))
+                .build();
+    }
+
+    private List<BookingDto> filterAndMap(List<Booking> bookings, BookingStatus status) {
+        return bookings.stream()
+                .filter(b -> b.getStatus() == status)
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     private void validateBookingAccess(UserPrincipal principal, Booking booking) {

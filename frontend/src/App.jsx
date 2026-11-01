@@ -5,6 +5,7 @@ import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
 import HelperOnboardingPage from './pages/HelperOnboardingPage';
 import AdminHelperVerificationPage from './pages/AdminHelperVerificationPage';
+import AdminBookingsBoardPage from './pages/AdminBookingsBoardPage';
 import ParentProfilesPage from './pages/ParentProfilesPage';
 import NewBookingPage from './pages/NewBookingPage';
 import BookingDetailPage from './pages/BookingDetailPage';
@@ -258,8 +259,21 @@ function MainApp() {
             <DashboardPage
               onNavigateHelperOnboarding={() => setActiveView('helper-onboarding')}
               onNavigateAdminVerification={() => setActiveView('admin-verification')}
+              onNavigateAdminBookings={() => setActiveView('admin-bookings')}
               onNavigateNewBooking={() => setActiveView('new-booking')}
               onNavigateParents={() => setActiveView('parents')}
+              onNavigateBookingDetail={handleOpenBookingDetail}
+            />
+          </ProtectedRoute>
+        )}
+        {activeView === 'admin-bookings' && (
+          <ProtectedRoute
+            allowedRoles={['ADMIN']}
+            onNavigateLogin={() => setActiveView('login')}
+            onNavigateDashboard={() => setActiveView('dashboard')}
+          >
+            <AdminBookingsBoardPage
+              onBackToDashboard={() => setActiveView('dashboard')}
               onNavigateBookingDetail={handleOpenBookingDetail}
             />
           </ProtectedRoute>

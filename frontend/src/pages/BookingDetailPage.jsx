@@ -24,6 +24,9 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
   const [cancelling, setCancelling] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [showCancelModal, setShowCancelModal] = useState(false);
+  const [respondingToMatch, setRespondingToMatch] = useState(false);
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [declineReason, setDeclineReason] = useState('');
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
 
@@ -62,6 +65,44 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
       setError(err.message || 'Failed to cancel booking');
     } finally {
       setCancelling(false);
+    }
+  };
+
+  const handleAcceptAssignment = async () => {
+    setRespondingToMatch(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const updated = await apiRequest(`/bookings/${bookingId}/accept`, {
+        method: 'POST',
+        body: JSON.stringify({ accept: true }),
+      });
+      setBooking(updated);
+      setMessage('You have accepted this visit! Family has been notified to complete payment.');
+    } catch (err) {
+      setError(err.message || 'Failed to accept assignment');
+    } finally {
+      setRespondingToMatch(false);
+    }
+  };
+
+  const handleDeclineAssignment = async (e) => {
+    e.preventDefault();
+    setRespondingToMatch(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const updated = await apiRequest(`/bookings/${bookingId}/accept`, {
+        method: 'POST',
+        body: JSON.stringify({ accept: false, reason: declineReason }),
+      });
+      setBooking(updated);
+      setShowDeclineModal(false);
+      setMessage('You have declined this visit assignment. The booking has been returned to the admin queue.');
+    } catch (err) {
+      setError(err.message || 'Failed to decline assignment');
+    } finally {
+      setRespondingToMatch(false);
     }
   };
 
@@ -174,6 +215,82 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
               );
             })}
           </div>
+        </div>
+      )}
+
+      {/* Helper Assignment Action Banner */}
+      {user?.role === 'HELPER' && booking.status === 'MATCHED' && (
+        <div className="bg-gradient-to-r from-teal-50 to-emerald-50 border-2 border-teal-500 rounded-3xl p-6 sm:p-8 shadow-md space-y-4">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-teal-600 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm">
+              <ShieldCheck className="w-7 h-7" />
+            </div>
+            <div className="space-y-1">
+              <span className="text-xs font-black uppercase tracking-wider text-teal-800 bg-teal-100 px-3 py-1 rounded-md">
+                Action Required
+              </span>
+              <h3 className="text-2xl font-black text-slate-900 pt-1">
+                New Visit Assignment Matched to You!
+              </h3>
+              <p className="text-base text-slate-700 leading-relaxed">
+                DearHand operations has matched you for this visit to assist <strong>{booking.parent?.name}</strong> on {new Date(booking.scheduledStart).toLocaleDateString()} at {new Date(booking.scheduledStart).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <button
+              onClick={handleAcceptAssignment}
+              disabled={respondingToMatch}
+              className="px-6 py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-extrabold text-lg rounded-2xl min-h-[48px] shadow-md transition-all flex items-center gap-2"
+            >
+              <CheckCircle2 className="w-5 h-5" />
+              {respondingToMatch ? 'Confirming...' : 'Accept Visit Assignment'}
+            </button>
+
+            <button
+              onClick={() => setShowDeclineModal(true)}
+              disabled={respondingToMatch}
+              className="px-6 py-3.5 bg-white hover:bg-red-50 text-red-700 border-2 border-red-300 font-bold text-lg rounded-2xl min-h-[48px] transition-all flex items-center gap-2"
+            >
+              <XCircle className="w-5 h-5" />
+              Decline Assignment
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Family Notification Banner: Matched */}
+      {user?.role === 'FAMILY' && booking.status === 'MATCHED' && (
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 flex items-start gap-3">
+          <Clock className="w-7 h-7 text-amber-600 flex-shrink-0 mt-0.5" />
+          <div>
+            <h4 className="text-xl font-bold text-slate-900">Helper Matched & Awaiting Acceptance</h4>
+            <p className="text-base text-slate-700 mt-1">
+              We have matched <strong>{booking.helper?.name}</strong> to your request. The helper has been notified via WhatsApp and will confirm shortly. Once confirmed, you can proceed to payment.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Family Notification Banner: Accepted and Ready for Payment */}
+      {user?.role === 'FAMILY' && booking.status === 'ACCEPTED' && booking.paymentStatus === 'PENDING' && (
+        <div className="bg-emerald-50 border-2 border-emerald-400 rounded-3xl p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="w-7 h-7 text-emerald-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <h4 className="text-xl font-bold text-emerald-950">Visit Accepted by {booking.helper?.name}!</h4>
+              <p className="text-base text-emerald-900 mt-1">
+                Your stand-in helper has confirmed the schedule. Please complete payment of ₹{booking.totalAmount} to finalize the visit.
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => onNavigatePayment && onNavigatePayment(booking.id)}
+            className="px-6 py-3.5 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-base rounded-2xl min-h-[48px] shadow-md whitespace-nowrap"
+          >
+            Proceed to Pay ₹{booking.totalAmount} &rarr;
+          </button>
         </div>
       )}
 
@@ -300,6 +417,43 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
                 className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl min-h-[44px]"
               >
                 Keep Booking
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Helper Decline Assignment Modal */}
+      {showDeclineModal && (
+        <div className="fixed inset-0 bg-slate-900/60 flex items-center justify-center p-4 z-50">
+          <div className="bg-white max-w-md w-full rounded-3xl p-6 space-y-4 shadow-2xl">
+            <div className="flex items-center gap-3 text-red-700">
+              <XCircle className="w-7 h-7" />
+              <h3 className="text-2xl font-bold">Decline Assignment</h3>
+            </div>
+            <p className="text-base text-slate-600">
+              Please share a reason so our Mysuru operations coordinator can quickly re-assign another stand-in helper for this parent.
+            </p>
+            <textarea
+              rows={3}
+              value={declineReason}
+              onChange={(e) => setDeclineReason(e.target.value)}
+              placeholder="e.g. Prior scheduling conflict, out of Mysuru"
+              className="w-full px-4 py-2.5 text-base border-2 border-slate-300 rounded-xl focus:border-red-600 focus:outline-none"
+            />
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={handleDeclineAssignment}
+                disabled={respondingToMatch}
+                className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl min-h-[44px]"
+              >
+                {respondingToMatch ? 'Declining...' : 'Confirm Decline'}
+              </button>
+              <button
+                onClick={() => setShowDeclineModal(false)}
+                className="px-5 py-3 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold rounded-xl min-h-[44px]"
+              >
+                Back
               </button>
             </div>
           </div>
