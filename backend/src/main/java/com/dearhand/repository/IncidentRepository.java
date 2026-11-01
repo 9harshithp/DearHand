@@ -10,5 +10,7 @@ import java.util.List;
 @Repository
 public interface IncidentRepository extends JpaRepository<Incident, Long> {
     List<Incident> findByStatus(IncidentStatus status);
+    List<Incident> findByStatusOrderByCreatedAtDesc(IncidentStatus status);
+    List<Incident> findAllByOrderByCreatedAtDesc();
     List<Incident> findByBookingId(Long bookingId);
 }

@@ -6,10 +6,12 @@ import DashboardPage from './pages/DashboardPage';
 import HelperOnboardingPage from './pages/HelperOnboardingPage';
 import AdminHelperVerificationPage from './pages/AdminHelperVerificationPage';
 import AdminBookingsBoardPage from './pages/AdminBookingsBoardPage';
+import AdminOperationsConsole from './pages/AdminOperationsConsole';
 import ParentProfilesPage from './pages/ParentProfilesPage';
 import NewBookingPage from './pages/NewBookingPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import ProtectedRoute from './components/ProtectedRoute';
+import NotificationBell from './components/NotificationBell';
 import {
   HeartHandshake,
   ShieldCheck,
@@ -62,6 +64,11 @@ function Navigation({ activeView, setActiveView }) {
 
           {isAuthenticated ? (
             <>
+              <NotificationBell
+                onNavigateBookingDetail={(id) => {
+                  setActiveView('booking-detail');
+                }}
+              />
               <button
                 onClick={() => setActiveView('dashboard')}
                 className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-base font-bold min-h-[44px] transition-colors ${
@@ -260,8 +267,21 @@ function MainApp() {
               onNavigateHelperOnboarding={() => setActiveView('helper-onboarding')}
               onNavigateAdminVerification={() => setActiveView('admin-verification')}
               onNavigateAdminBookings={() => setActiveView('admin-bookings')}
+              onNavigateAdminOperations={() => setActiveView('admin-operations')}
               onNavigateNewBooking={() => setActiveView('new-booking')}
               onNavigateParents={() => setActiveView('parents')}
+              onNavigateBookingDetail={handleOpenBookingDetail}
+            />
+          </ProtectedRoute>
+        )}
+        {activeView === 'admin-operations' && (
+          <ProtectedRoute
+            allowedRoles={['ADMIN']}
+            onNavigateLogin={() => setActiveView('login')}
+            onNavigateDashboard={() => setActiveView('dashboard')}
+          >
+            <AdminOperationsConsole
+              onBackToDashboard={() => setActiveView('dashboard')}
               onNavigateBookingDetail={handleOpenBookingDetail}
             />
           </ProtectedRoute>

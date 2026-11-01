@@ -19,6 +19,8 @@ public class IncidentDto {
     private Long bookingId;
     private Long reportedById;
     private String reportedByName;
+    private String parentName;
+    private String helperName;
     private String description;
     private IncidentSeverity severity;
     private IncidentStatus status;

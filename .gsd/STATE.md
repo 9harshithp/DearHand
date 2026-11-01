@@ -1,7 +1,7 @@
 ---
-phase: 9
+phase: 10
 status: planning
-last_updated: 2026-11-01
+last_updated: 2026-11-02
 ---
 
 # State
@@ -14,12 +14,13 @@ last_updated: 2026-11-01
 - **Phase 5 (Parents & Bookings)** completed and committed (`1d0f895`).
 - **Phase 6 (Matching & Acceptance)** completed and committed (`ee8a48e`).
 - **Phase 7 (Payments)** completed and committed (`d173462`).
-- **Phase 8 (Visits and Reviews)** completed and verified:
-  - Helper check-in endpoint (`POST /api/v1/bookings/{id}/checkin`) starts visit, transitions booking to `IN_PROGRESS`, records timestamp, notifies family.
-  - Helper visit update endpoint (`POST /api/v1/bookings/{id}/update`) supports notes and photo uploads via `StorageService.storeVisitPhoto`.
-  - Helper checkout endpoint (`POST /api/v1/bookings/{id}/checkout`) completes visit, transitions booking to `COMPLETED`, records checkout time, dispatches review prompt notification.
-  - Emergency alert endpoint (`POST /api/v1/bookings/{id}/emergency`) creates high-severity `Incident` record, triggers immediate alerts.
-  - Family post-visit review endpoint (`POST /api/v1/bookings/{id}/review`) validates 1–5 stars, stores review, recalculates helper rolling average rating.
-  - Frontend components: `HelperVisitConsole.jsx`, `ReviewModal.jsx`, `EmergencyAlertModal.jsx`, and integrated visit activity log and review display on `BookingDetailPage.jsx`.
-  - 48/48 integration tests passing.
-- Next: **Prompt 9: Notifications and Admin Operations**.
+- **Phase 8 (Visits and Reviews)** completed and committed (`cd70daa`).
+- **Phase 9 (Notifications and Admin Operations)** completed and verified:
+  - Incident handling endpoints: `GET /api/v1/admin/incidents` (status filter), `PUT /api/v1/admin/incidents/{id}/status` with action notes, audit logging, and automated notification alerts to the reporting user.
+  - Care package catalog & pricing endpoints: `GET /api/v1/admin/packages`, `POST /api/v1/admin/packages`, `PUT /api/v1/admin/packages/{id}` for base price, duration, and active toggle.
+  - Audit trail endpoint: `GET /api/v1/admin/audit-logs` returning chronological sensitive actions and actors.
+  - Multi-channel notification desk: `GET /api/v1/admin/notifications` (outbox log across WhatsApp, SMS, Email, In-App).
+  - User notification feed: `GET /api/v1/notifications/me`, `PUT /api/v1/notifications/{id}/read`, `POST /api/v1/notifications/mark-all-read`.
+  - Frontend components: `AdminOperationsConsole.jsx` (tabs for Incidents, Packages, Audit, and Notifications) and `NotificationBell.jsx` in the persistent header with real-time badge.
+  - 54/54 backend tests passing (`./mvnw test`), frontend build clean (`npm run build`).
+- Next: **Prompt 10: Hardening, Security Audit & Launch**.

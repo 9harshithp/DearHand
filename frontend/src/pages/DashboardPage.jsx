@@ -22,6 +22,7 @@ export default function DashboardPage({
   onNavigateHelperOnboarding,
   onNavigateAdminVerification,
   onNavigateAdminBookings,
+  onNavigateAdminOperations,
   onNavigateNewBooking,
   onNavigateParents,
   onNavigateBookingDetail,
@@ -292,6 +293,12 @@ export default function DashboardPage({
             </div>
             <div className="flex flex-wrap gap-2">
               <button
+                onClick={onNavigateAdminOperations}
+                className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-base min-h-[44px] shadow-sm transition-colors"
+              >
+                Safety & Operations Desk &rarr;
+              </button>
+              <button
                 onClick={onNavigateAdminBookings}
                 className="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl text-base min-h-[44px] shadow-sm transition-colors"
               >
@@ -301,12 +308,20 @@ export default function DashboardPage({
                 onClick={onNavigateAdminVerification}
                 className="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white font-bold rounded-xl text-base min-h-[44px] transition-colors"
               >
-                Helper Verification Console &rarr;
+                Helper Verification &rarr;
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            <div
+              onClick={onNavigateAdminOperations}
+              className="p-5 bg-red-50 border-2 border-red-200 hover:border-red-500 rounded-2xl cursor-pointer transition-all"
+            >
+              <p className="font-bold text-red-900 text-lg">Safety & Pricing Desk</p>
+              <p className="text-sm text-red-800 font-semibold mt-1">Incidents & Packages</p>
+              <p className="text-sm text-red-700 mt-1">Manage safety alerts, package prices & audit trail &rarr;</p>
+            </div>
             <div
               onClick={onNavigateAdminBookings}
               className="p-5 bg-teal-50 border-2 border-teal-200 hover:border-teal-500 rounded-2xl cursor-pointer transition-all"
@@ -321,10 +336,6 @@ export default function DashboardPage({
             >
               <p className="font-bold text-purple-900 text-lg">Helper Verification</p>
               <p className="text-sm text-purple-700 mt-1">Review licenses and background checks &rarr;</p>
-            </div>
-            <div className="p-5 bg-slate-50 border-2 border-slate-200 rounded-2xl">
-              <p className="font-bold text-slate-900 text-lg">Audit Trail</p>
-              <p className="text-sm text-slate-600 mt-1">State transitions and sensitive actions logged</p>
             </div>
           </div>
         </section>

@@ -281,6 +281,8 @@ public class VisitService {
                 .bookingId(booking.getId())
                 .reportedById(reporter.getId())
                 .reportedByName(reporter.getName())
+                .parentName(booking.getParent() != null ? booking.getParent().getName() : "Unknown Parent")
+                .helperName(booking.getHelper() != null ? booking.getHelper().getUser().getName() : "Unassigned")
                 .description(saved.getDescription())
                 .severity(saved.getSeverity())
                 .status(saved.getStatus())
