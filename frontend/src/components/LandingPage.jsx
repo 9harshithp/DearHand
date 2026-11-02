@@ -123,44 +123,44 @@ export default function LandingPage({ onGetStarted, onSignIn, onSelectPackage })
   return (
     <div className="bg-slate-50 text-slate-900 selection:bg-teal-500 selection:text-white">
       {/* ===== LOCAL SERVICE BANNER ===== */}
-      <div className="bg-gradient-to-r from-teal-900 via-teal-800 to-slate-900 text-teal-100 py-2.5 px-4 text-center text-sm font-medium border-b border-teal-700/50">
-        <div className="max-w-6xl mx-auto flex items-center justify-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 bg-teal-500/20 text-teal-200 px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border border-teal-500/30">
-            <Sparkles className="w-3.5 h-3.5 text-teal-300" />
+      <div className="bg-gradient-to-r from-teal-900 via-teal-800 to-slate-900 text-teal-100 py-2 px-3 text-center text-xs sm:text-sm font-medium border-b border-teal-700/50">
+        <div className="max-w-6xl mx-auto flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
+          <span className="inline-flex items-center gap-1 bg-teal-500/20 text-teal-200 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider border border-teal-500/30">
+            <Sparkles className="w-3 h-3 text-teal-300" />
             Mysuru Elder Care
           </span>
-          <span>Verified stand-in helpers actively serving <strong>Gokulam, Jayalakshmipuram, Saraswathipuram & Kuvempunagar</strong></span>
+          <span className="leading-snug">Verified stand-in helpers in <strong>Gokulam, Jayalakshmipuram, Saraswathipuram & Kuvempunagar</strong></span>
         </div>
       </div>
 
       {/* ===== HERO SECTION ===== */}
-      <section className="relative pt-12 pb-20 md:pt-16 md:pb-28 overflow-hidden bg-white border-b border-slate-200">
+      <section className="relative pt-8 pb-14 sm:pt-14 sm:pb-24 overflow-hidden bg-white border-b border-slate-200">
         {/* Soft radial background glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-teal-50 via-emerald-50/40 to-transparent blur-3xl pointer-events-none -z-10"></div>
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
             
             {/* Left Copy Column */}
             <div className="lg:col-span-7 text-center lg:text-left">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-teal-50 border border-teal-200 text-teal-800 rounded-full text-xs font-bold uppercase tracking-wider mb-6 shadow-sm">
-                <ShieldCheck className="w-4 h-4 text-teal-600" />
-                100% Police & Biometric Verified Companions
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-50 border border-teal-200 text-teal-800 rounded-full text-[11px] sm:text-xs font-bold uppercase tracking-normal sm:tracking-wider mb-4 sm:mb-6 shadow-xs max-w-full">
+                <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-600 flex-shrink-0" />
+                <span>100% Police & Biometric Verified Companions</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
+              <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.25] text-balance">
                 You Work In Bengaluru.{' '}
-                <span className="text-teal-700 block">
+                <span className="text-teal-700 block mt-1">
                   We Stand By Your Parents In Mysuru.
                 </span>
               </h1>
 
-              <p className="mt-5 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto lg:mx-0 leading-relaxed font-normal">
+              <p className="mt-3 sm:mt-5 text-sm sm:text-lg text-slate-700 leading-relaxed font-normal max-w-2xl mx-auto lg:mx-0">
                 Book a trusted, police-verified companion for your elderly parents’ <strong>hospital OPD visits, pharmacy pickups, bank errands & daily walks</strong>. With real-time photo check-ins and zero upfront charges.
               </p>
 
-              {/* Value Badges */}
-              <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-3 text-left max-w-xl mx-auto lg:mx-0">
+              {/* Value Badges - Clean stacked list on mobile, 3-column on tablet/desktop */}
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-2 text-left max-w-xl mx-auto lg:mx-0">
                 <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0" />
                   <span className="text-xs font-bold text-slate-800">Kannada & English</span>
@@ -169,29 +169,29 @@ export default function LandingPage({ onGetStarted, onSignIn, onSelectPackage })
                   <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0" />
                   <span className="text-xs font-bold text-slate-800">Photo Proof of Visit</span>
                 </div>
-                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200 col-span-2 sm:col-span-1">
+                <div className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
                   <CheckCircle2 className="w-4 h-4 text-teal-600 flex-shrink-0" />
                   <span className="text-xs font-bold text-slate-800">Razorpay Protected</span>
                 </div>
               </div>
 
               {/* Action Buttons */}
-              <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start">
                 <button
                   onClick={() => handleAction('single')}
-                  className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-teal-600 hover:bg-teal-700 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-lg shadow-teal-700/20 transition-all min-h-[48px]"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-teal-600 hover:bg-teal-700 active:scale-[0.99] text-white font-bold text-base rounded-2xl shadow-md transition-all min-h-[48px]"
                 >
                   Book a Verified Helper <ArrowRight className="w-5 h-5" />
                 </button>
                 <a
                   href="#pricing-calculator"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-4 bg-white border-2 border-slate-300 hover:border-slate-400 text-slate-800 font-bold text-base rounded-2xl transition-all hover:bg-slate-50 min-h-[48px]"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-white border-2 border-slate-300 hover:border-slate-400 text-slate-800 font-bold text-base rounded-2xl transition-all hover:bg-slate-50 min-h-[48px]"
                 >
                   View Packages & Rates
                 </a>
               </div>
 
-              <div className="mt-4 flex items-center justify-center lg:justify-start gap-4 text-xs font-semibold text-slate-500">
+              <div className="mt-3 sm:mt-4 flex items-center justify-center lg:justify-start gap-3 text-[11px] sm:text-xs font-semibold text-slate-500">
                 <span className="flex items-center gap-1">
                   <Lock className="w-3.5 h-3.5 text-slate-400" /> No subscription required
                 </span>
@@ -350,15 +350,15 @@ export default function LandingPage({ onGetStarted, onSignIn, onSelectPackage })
           </div>
 
           {/* Package Selector Tabs */}
-          <div className="flex justify-center mb-10">
-            <div className="inline-flex p-1.5 bg-slate-100 rounded-2xl border border-slate-200 max-w-full overflow-x-auto">
+          <div className="flex justify-center mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-1.5 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 w-full max-w-2xl">
               {PACKAGES.map((pkg, idx) => (
                 <button
                   key={pkg.id}
                   onClick={() => setSelectedPkgIndex(idx)}
-                  className={`px-5 py-3 rounded-xl text-sm font-bold transition-all min-h-[44px] whitespace-nowrap ${
+                  className={`w-full py-2.5 px-3 rounded-xl text-xs sm:text-sm font-bold transition-all text-center ${
                     selectedPkgIndex === idx
-                      ? 'bg-white text-teal-900 shadow-md border border-slate-200/80'
+                      ? 'bg-white text-teal-900 shadow-sm border border-slate-200'
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
@@ -369,21 +369,21 @@ export default function LandingPage({ onGetStarted, onSignIn, onSelectPackage })
           </div>
 
           {/* Interactive Selected Package Card */}
-          <div className="max-w-3xl mx-auto bg-slate-50 border-2 border-teal-600/30 rounded-3xl p-6 sm:p-10 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-teal-600 text-white text-xs font-extrabold uppercase tracking-wider px-4 py-1.5 rounded-bl-2xl">
+          <div className="max-w-3xl mx-auto bg-slate-50 border-2 border-teal-600/30 rounded-2xl sm:rounded-3xl p-5 sm:p-8 shadow-xs relative">
+            <div className="inline-block bg-teal-600 text-white text-[11px] sm:text-xs font-extrabold uppercase tracking-wider px-3 py-1 rounded-lg mb-4">
               {activePkg.tag}
             </div>
 
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-6 border-b border-slate-200">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 pb-5 border-b border-slate-200">
               <div>
-                <h3 className="text-2xl font-black text-slate-900">{activePkg.title}</h3>
-                <p className="text-sm font-semibold text-slate-500 mt-1 flex items-center gap-1.5">
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900">{activePkg.title}</h3>
+                <p className="text-xs sm:text-sm font-semibold text-slate-500 mt-1 flex items-center gap-1.5">
                   <Clock className="w-4 h-4 text-teal-600" /> Duration: {activePkg.hours}
                 </p>
               </div>
               <div className="text-left sm:text-right">
-                <div className="text-4xl font-black text-teal-700">₹{activePkg.price}</div>
-                <p className="text-xs font-semibold text-slate-500">Fixed rate per visit · All inclusive</p>
+                <div className="text-3xl sm:text-4xl font-black text-teal-700">₹{activePkg.price}</div>
+                <p className="text-[11px] sm:text-xs font-semibold text-slate-500">Fixed rate per visit · All inclusive</p>
               </div>
             </div>
 

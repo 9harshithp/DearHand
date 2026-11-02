@@ -26,31 +26,32 @@ function Navigation({ activeView, setActiveView }) {
   const { user, isAuthenticated, logout } = useAuth();
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <header className="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2">
         {/* Logo and Brand */}
         <button
           onClick={() => setActiveView('home')}
-          className="flex items-center gap-3 text-left focus:outline-none"
+          className="flex items-center gap-2 sm:gap-3 text-left focus:outline-none flex-shrink-0"
         >
-          <div className="w-12 h-12 bg-teal-600 rounded-2xl flex items-center justify-center text-white shadow-md">
-            <HeartHandshake className="w-7 h-7" />
+          <div className="w-8 h-8 sm:w-11 sm:h-11 bg-teal-600 rounded-xl sm:rounded-2xl flex items-center justify-center text-white shadow-xs flex-shrink-0">
+            <HeartHandshake className="w-4 h-4 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <h1 className="text-2xl font-black text-slate-900 tracking-tight leading-none">
+            <span className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight leading-none block">
               DearHand
-            </h1>
-            <p className="text-xs font-semibold text-teal-700 mt-1 uppercase tracking-wider">
+            </span>
+            <span className="text-[10px] sm:text-xs font-bold text-teal-700 uppercase tracking-wider block">
               Mysuru Pilot
-            </p>
+            </span>
           </div>
         </button>
 
         {/* Nav Links */}
-        <nav className="flex items-center gap-2">
+        <nav className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
+          {/* Desktop-only Home link */}
           <button
             onClick={() => setActiveView('home')}
-            className={`px-3.5 py-2 rounded-xl text-base font-bold min-h-[44px] transition-colors ${
+            className={`hidden md:inline-flex px-3 py-2 rounded-xl text-sm font-bold transition-colors ${
               activeView === 'home'
                 ? 'bg-slate-100 text-teal-800'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -68,14 +69,15 @@ function Navigation({ activeView, setActiveView }) {
               />
               <button
                 onClick={() => setActiveView('dashboard')}
-                className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl text-base font-bold min-h-[44px] transition-colors ${
+                className={`inline-flex items-center gap-1.5 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-colors whitespace-nowrap ${
                   activeView === 'dashboard'
                     ? 'bg-teal-600 text-white shadow-sm'
                     : 'bg-teal-50 text-teal-900 hover:bg-teal-100 border border-teal-200'
                 }`}
               >
-                <LayoutDashboard className="w-4 h-4" />
-                Dashboard ({user?.name?.split(' ')[0]})
+                <LayoutDashboard className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Dashboard ({user?.name?.split(' ')[0]})</span>
+                <span className="sm:hidden">Dashboard</span>
               </button>
               <button
                 onClick={() => {
@@ -83,31 +85,31 @@ function Navigation({ activeView, setActiveView }) {
                   setActiveView('home');
                 }}
                 title="Sign Out"
-                className="p-2.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
+                className="p-1.5 sm:p-2.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 flex items-center justify-center transition-colors"
               >
-                <LogOut className="w-5 h-5" />
+                <LogOut className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
             </>
           ) : (
             <>
               <button
                 onClick={() => setActiveView('login')}
-                className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-base font-bold min-h-[44px] transition-colors ${
+                className={`inline-flex items-center gap-1 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold transition-colors whitespace-nowrap ${
                   activeView === 'login'
                     ? 'bg-slate-900 text-white'
                     : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
-                <LogIn className="w-4 h-4" />
-                Sign In
+                <LogIn className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span>Sign In</span>
               </button>
 
               <button
                 onClick={() => setActiveView('register')}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-base font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-sm min-h-[44px] transition-colors"
+                className="inline-flex items-center gap-1 px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm font-bold bg-teal-600 hover:bg-teal-700 text-white shadow-xs transition-colors whitespace-nowrap"
               >
-                <UserPlus className="w-4 h-4" />
-                Join
+                <UserPlus className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span>Join</span>
               </button>
             </>
           )}

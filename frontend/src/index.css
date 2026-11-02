@@ -7,6 +7,7 @@
     font-size: 16px;
     font-family: 'Times New Roman', Times, serif;
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
@@ -14,27 +15,21 @@
     font-family: 'Times New Roman', Times, serif;
     -webkit-tap-highlight-color: transparent;
     min-height: 100dvh;
+    overflow-x: hidden;
   }
 
-  /* Accessibility standard: minimum 44px tap targets for interactive elements */
-  button, a, input, select, textarea {
+  /* Accessibility standard for form controls and primary buttons */
+  input, select, textarea {
     @apply min-h-[44px];
   }
 }
 
 /* ==========================================================================
    1. Mobile Viewport Media Query (<= 640px)
-   Enhanced accessibility for elderly family members & on-the-go helpers
    ========================================================================== */
 @media screen and (max-width: 640px) {
   html {
-    /* Slightly increased base size on phones for maximum legibility */
-    font-size: 17px;
-  }
-
-  /* Increase touch targets to 48px for effortless tapping on mobile screens */
-  button, a, input, select, textarea {
-    min-height: 48px;
+    font-size: 15px;
   }
 
   /* Fluid typography scaling */
