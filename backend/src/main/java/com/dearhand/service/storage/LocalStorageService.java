@@ -35,12 +35,19 @@ public class LocalStorageService implements StorageService {
     private final Path rootLocation;
 
     public LocalStorageService(@Value("${app.upload.dir:./uploads/documents}") String uploadDir) {
-        this.rootLocation = Paths.get(uploadDir).toAbsolutePath().normalize();
+        Path targetPath;
         try {
-            Files.createDirectories(this.rootLocation);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not initialize document storage location", e);
+            targetPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+            Files.createDirectories(targetPath);
+        } catch (Exception e) {
+            targetPath = Paths.get(System.getProperty("java.io.tmpdir", "/tmp"), "dearhand_uploads").toAbsolutePath().normalize();
+            try {
+                Files.createDirectories(targetPath);
+            } catch (IOException ex) {
+                throw new RuntimeException("Could not initialize document storage location", ex);
+            }
         }
+        this.rootLocation = targetPath;
     }
 
     @Override
