@@ -53,7 +53,7 @@ public class SecurityConfig {
                 )
             )
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/health", "/api/v1/auth/**", "/api/v1/packages/**", "/api/v1/payments/webhook", "/actuator/**", "/error").permitAll()
+                .requestMatchers("/", "/health", "/api/v1/health", "/api/v1/auth/**", "/api/v1/packages/**", "/api/v1/payments/webhook", "/actuator/**", "/error").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(rateLimitingFilter, UsernamePasswordAuthenticationFilter.class)

@@ -20,7 +20,6 @@ USER dearhand
 
 COPY --from=builder --chown=dearhand:dearhand /app/target/dearhand-backend-0.0.1-SNAPSHOT.jar app.jar
 
-ENV PORT=8080
-EXPOSE 8080
+EXPOSE 8080 10000
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
