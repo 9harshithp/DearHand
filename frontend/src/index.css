@@ -5,12 +5,13 @@
 @layer base {
   html {
     font-size: 16px;
-    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    font-family: 'Times New Roman', Times, serif;
     scroll-behavior: smooth;
   }
 
   body {
     @apply bg-slate-50 text-slate-900;
+    font-family: 'Times New Roman', Times, serif;
     -webkit-tap-highlight-color: transparent;
     min-height: 100dvh;
   }

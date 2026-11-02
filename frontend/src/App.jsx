@@ -291,9 +291,11 @@ function MainApp() {
         )}
       </main>
 
-      <footer className="bg-white border-t border-slate-200 py-6 text-center text-sm font-semibold text-slate-500">
-        DearHand Platform &copy; 2026 · Mysuru Pilot · Handpicked stand-ins for elderly parents
-      </footer>
+      {activeView !== 'home' && (
+        <footer className="bg-white border-t border-slate-200 py-6 text-center text-sm font-semibold text-slate-500">
+          DearHand Platform &copy; 2026 · Mysuru Pilot · Handpicked stand-ins for elderly parents
+        </footer>
+      )}
     </div>
   );
 }
