@@ -5,9 +5,9 @@ spring:
   application:
     name: dearhand-backend
   datasource:
-    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:dearhand}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: ${DB_USER:dearhand}
-    password: ${DB_PASSWORD:dearhand123}
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:dearhand}?sslMode=${DB_SSL_MODE:PREFERRED}&allowPublicKeyRetrieval=true&serverTimezone=UTC}}
+    username: ${SPRING_DATASOURCE_USERNAME:${DB_USER:dearhand}}
+    password: ${SPRING_DATASOURCE_PASSWORD:${DB_PASSWORD:dearhand123}}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -45,5 +45,3 @@ dearhand:
   rate-limiting:
     enabled: ${RATE_LIMITING_ENABLED:true}
     limit-per-minute: ${RATE_LIMITING_LIMIT_PER_MINUTE:15}
-
-
