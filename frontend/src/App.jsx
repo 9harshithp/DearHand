@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -12,16 +12,13 @@ import NewBookingPage from './pages/NewBookingPage';
 import BookingDetailPage from './pages/BookingDetailPage';
 import ProtectedRoute from './components/ProtectedRoute';
 import NotificationBell from './components/NotificationBell';
+import LandingPage from './components/LandingPage';
 import {
   HeartHandshake,
   ShieldCheck,
-  Activity,
   LogIn,
   UserPlus,
   LayoutDashboard,
-  CheckCircle2,
-  AlertCircle,
-  RefreshCw,
   LogOut
 } from 'lucide-react';
 
@@ -59,7 +56,7 @@ function Navigation({ activeView, setActiveView }) {
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             }`}
           >
-            Overview
+            Home
           </button>
 
           {isAuthenticated ? (
@@ -81,9 +78,12 @@ function Navigation({ activeView, setActiveView }) {
                 Dashboard ({user?.name?.split(' ')[0]})
               </button>
               <button
-                onClick={logout}
+                onClick={() => {
+                  logout();
+                  setActiveView('home');
+                }}
                 title="Sign Out"
-                className="p-2.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                className="p-2.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors"
               >
                 <LogOut className="w-5 h-5" />
               </button>
@@ -117,147 +117,74 @@ function Navigation({ activeView, setActiveView }) {
   );
 }
 
-function HomeOverview({ setActiveView }) {
-  const [health, setHealth] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const checkHealth = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/v1/health');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      setHealth(data);
-    } catch (err) {
-      setError(err.message || 'API Unreachable');
-      setHealth(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  React.useEffect(() => {
-    checkHealth();
-  }, []);
-
-  return (
-    <div className="space-y-8 max-w-5xl mx-auto px-4 py-8">
-      {/* Hero Banner */}
-      <section className="bg-gradient-to-br from-teal-900 via-teal-800 to-slate-900 text-white rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden">
-        <div className="max-w-2xl relative z-10 space-y-4">
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-teal-500/30 text-teal-200 border border-teal-400/40">
-            <ShieldCheck className="w-4 h-4" />
-            Vetted Helpers in Mysuru
-          </span>
-          <h2 className="text-3xl md:text-5xl font-black leading-tight tracking-tight">
-            A trusted stand-in when you can't be there.
-          </h2>
-          <p className="text-lg md:text-xl text-teal-100 leading-relaxed font-normal">
-            DearHand pairs elderly parents in Mysuru with background-verified, consistent helpers for hospital visits, errands, and daily companionship.
-          </p>
-          <div className="flex flex-wrap gap-4 pt-4">
-            <button
-              onClick={() => setActiveView('register')}
-              className="bg-teal-400 hover:bg-teal-300 text-teal-950 font-extrabold px-6 py-3.5 rounded-2xl text-lg shadow-lg hover:shadow-xl transition-all min-h-[44px]"
-            >
-              Book for Your Parents
-            </button>
-            <button
-              onClick={() => setActiveView('login')}
-              className="bg-white/10 hover:bg-white/20 text-white font-bold px-6 py-3.5 rounded-2xl text-lg border border-white/30 transition-all min-h-[44px]"
-            >
-              Sign In to Account
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Core Features Grid */}
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm">
-          <div className="w-12 h-12 bg-teal-100 text-teal-800 rounded-2xl flex items-center justify-center font-bold text-xl mb-4">
-            1
-          </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">Book in 3 Minutes</h3>
-          <p className="text-base text-slate-600">
-            Select errand or day packages, parent address, care instructions, and timing directly from your phone.
-          </p>
-        </div>
-
-        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm">
-          <div className="w-12 h-12 bg-amber-100 text-amber-800 rounded-2xl flex items-center justify-center font-bold text-xl mb-4">
-            2
-          </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">100% Vetted Helpers</h3>
-          <p className="text-base text-slate-600">
-            Police verification, driving licence checks, reference interviews, and supervised trial visits before approval.
-          </p>
-        </div>
-
-        <div className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm">
-          <div className="w-12 h-12 bg-blue-100 text-blue-800 rounded-2xl flex items-center justify-center font-bold text-xl mb-4">
-            3
-          </div>
-          <h3 className="text-xl font-bold text-slate-900 mb-2">Updates & Photos</h3>
-          <p className="text-base text-slate-600">
-            Receive check-in alerts, real-time visit photos, prescription updates, and one-tap emergency escalation.
-          </p>
-        </div>
-      </section>
-
-      {/* System Health Status */}
-      <section className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Activity className="w-6 h-6 text-teal-600" />
-          <div>
-            <h4 className="font-bold text-slate-900 text-base">Backend API Status</h4>
-            <p className="text-sm text-slate-500">
-              {health ? `Connected · ${health.service} (${health.version})` : error ? error : 'Connecting...'}
-            </p>
-          </div>
-        </div>
-        <button
-          onClick={checkHealth}
-          disabled={loading}
-          className="p-2.5 rounded-xl hover:bg-slate-100 text-slate-600 min-h-[44px] min-w-[44px] flex items-center justify-center"
-        >
-          <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin text-teal-600' : ''}`} />
-        </button>
-      </section>
-    </div>
-  );
-}
-
 function MainApp() {
+  const { user, isAuthenticated } = useAuth();
   const [activeView, setActiveView] = useState('home');
   const [selectedBookingId, setSelectedBookingId] = useState(null);
-  const { isAuthenticated } = useAuth();
 
-  const handleOpenBookingDetail = (id) => {
-    setSelectedBookingId(id);
+  const handleOpenBookingDetail = useCallback((bookingId) => {
+    setSelectedBookingId(bookingId);
     setActiveView('booking-detail');
-  };
+  }, []);
+
+  const handleCloseBookingDetail = useCallback(() => {
+    setSelectedBookingId(null);
+    setActiveView('dashboard');
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-between">
       <Navigation activeView={activeView} setActiveView={setActiveView} />
 
       <main className="flex-1">
-        {activeView === 'home' && <HomeOverview setActiveView={setActiveView} />}
+        {activeView === 'home' && (
+          <LandingPage
+            onGetStarted={() => setActiveView(isAuthenticated ? 'new-booking' : 'register')}
+            onSignIn={() => setActiveView('login')}
+            onSelectPackage={() => setActiveView(isAuthenticated ? 'new-booking' : 'register')}
+          />
+        )}
+
         {activeView === 'login' && (
-          <LoginPage
-            onNavigateRegister={() => setActiveView('register')}
-            onSuccess={() => setActiveView('dashboard')}
-          />
+          isAuthenticated ? (
+            <div className="max-w-md mx-auto my-12 p-8 bg-white border border-slate-200 rounded-3xl text-center shadow-sm">
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Already signed in</h3>
+              <p className="text-sm text-slate-600 mb-6">You are signed in as {user?.email}</p>
+              <button
+                onClick={() => setActiveView('dashboard')}
+                className="w-full py-3 px-6 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl min-h-[44px]"
+              >
+                Go to Dashboard
+              </button>
+            </div>
+          ) : (
+            <LoginPage
+              onNavigateRegister={() => setActiveView('register')}
+              onSuccess={() => setActiveView('dashboard')}
+            />
+          )
         )}
+
         {activeView === 'register' && (
-          <RegisterPage
-            onNavigateLogin={() => setActiveView('login')}
-            onSuccess={() => setActiveView('dashboard')}
-          />
+          isAuthenticated ? (
+            <div className="max-w-md mx-auto my-12 p-8 bg-white border border-slate-200 rounded-3xl text-center shadow-sm">
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Already registered</h3>
+              <p className="text-sm text-slate-600 mb-6">You are signed in as {user?.email}</p>
+              <button
+                onClick={() => setActiveView('dashboard')}
+                className="w-full py-3 px-6 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl min-h-[44px]"
+              >
+                Go to Dashboard
+              </button>
+            </div>
+          ) : (
+            <RegisterPage
+              onNavigateLogin={() => setActiveView('login')}
+              onSuccess={() => setActiveView('login')}
+            />
+          )
         )}
+
         {activeView === 'dashboard' && (
           <ProtectedRoute
             onNavigateLogin={() => setActiveView('login')}
@@ -274,6 +201,7 @@ function MainApp() {
             />
           </ProtectedRoute>
         )}
+
         {activeView === 'admin-operations' && (
           <ProtectedRoute
             allowedRoles={['ADMIN']}
@@ -286,6 +214,7 @@ function MainApp() {
             />
           </ProtectedRoute>
         )}
+
         {activeView === 'admin-bookings' && (
           <ProtectedRoute
             allowedRoles={['ADMIN']}
@@ -298,6 +227,7 @@ function MainApp() {
             />
           </ProtectedRoute>
         )}
+
         {activeView === 'parents' && (
           <ProtectedRoute
             allowedRoles={['FAMILY', 'ADMIN']}
@@ -309,6 +239,7 @@ function MainApp() {
             />
           </ProtectedRoute>
         )}
+
         {activeView === 'new-booking' && (
           <ProtectedRoute
             allowedRoles={['FAMILY']}
@@ -322,6 +253,7 @@ function MainApp() {
             />
           </ProtectedRoute>
         )}
+
         {activeView === 'booking-detail' && (
           <ProtectedRoute
             onNavigateLogin={() => setActiveView('login')}
@@ -329,10 +261,11 @@ function MainApp() {
           >
             <BookingDetailPage
               bookingId={selectedBookingId}
-              onBack={() => setActiveView('dashboard')}
+              onBack={handleCloseBookingDetail}
             />
           </ProtectedRoute>
         )}
+
         {activeView === 'helper-onboarding' && (
           <ProtectedRoute
             allowedRoles={['HELPER', 'ADMIN']}
@@ -344,6 +277,7 @@ function MainApp() {
             />
           </ProtectedRoute>
         )}
+
         {activeView === 'admin-verification' && (
           <ProtectedRoute
             allowedRoles={['ADMIN']}
