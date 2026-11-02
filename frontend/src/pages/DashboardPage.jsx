@@ -56,12 +56,13 @@ export default function DashboardPage({
     setRoleTestResult(null);
     try {
       const data = await apiRequest(`/test/${roleEndpoint}`);
-      setRoleTestResult({ success: true, message: data.message, code: 200 });
+      setRoleTestResult({ success: true, message: data.message, code: 200, testedRole: roleEndpoint });
     } catch (err) {
       setRoleTestResult({
         success: false,
         message: err.message || 'Access Forbidden',
         code: err.status || 403,
+        testedRole: roleEndpoint,
       });
     } finally {
       setRoleTestLoading(false);
@@ -353,52 +354,71 @@ export default function DashboardPage({
           </div>
         </div>
 
+        <div className="flex flex-wrap items-center gap-3">
+          <span className="text-sm font-bold text-slate-700">
+            Current Account Role: <span className="px-2.5 py-1 bg-slate-900 text-white rounded-lg uppercase text-xs tracking-wider">{user?.role}</span>
+          </span>
+        </div>
+
         <div className="flex flex-wrap gap-3">
           <button
             onClick={() => testEndpoint('family')}
             disabled={roleTestLoading}
-            className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base rounded-xl min-h-[44px] transition-colors"
+            className="px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold text-base rounded-xl min-h-[44px] transition-colors shadow-sm"
           >
             Test /test/family (Needs FAMILY)
           </button>
           <button
             onClick={() => testEndpoint('helper')}
             disabled={roleTestLoading}
-            className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-xl min-h-[44px] transition-colors"
+            className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base rounded-xl min-h-[44px] transition-colors shadow-sm"
           >
             Test /test/helper (Needs HELPER)
           </button>
           <button
             onClick={() => testEndpoint('admin')}
             disabled={roleTestLoading}
-            className="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold text-base rounded-xl min-h-[44px] transition-colors"
+            className="px-5 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold text-base rounded-xl min-h-[44px] transition-colors shadow-sm"
           >
             Test /test/admin (Needs ADMIN)
           </button>
         </div>
 
         {roleTestLoading && (
-          <p className="text-base text-slate-600">Checking endpoint permission...</p>
+          <p className="text-base text-slate-600 animate-pulse font-medium">Contacting Spring Boot security filter...</p>
         )}
 
         {roleTestResult && (
           <div
-            className={`p-4 rounded-xl border-2 flex items-start gap-3 ${
+            className={`p-5 rounded-2xl border-2 flex items-start gap-4 ${
               roleTestResult.success
-                ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
-                : 'bg-red-50 border-red-300 text-red-900'
+                ? 'bg-emerald-50 border-emerald-300 text-emerald-950'
+                : 'bg-amber-50 border-amber-300 text-amber-950'
             }`}
           >
             {roleTestResult.success ? (
-              <CheckCircle2 className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-7 h-7 text-emerald-600 flex-shrink-0 mt-0.5" />
             ) : (
-              <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+              <AlertTriangle className="w-7 h-7 text-amber-600 flex-shrink-0 mt-0.5" />
             )}
-            <div>
-              <p className="text-lg font-bold">
-                HTTP {roleTestResult.code} {roleTestResult.success ? 'Success' : 'Forbidden'}
+            <div className="space-y-1">
+              <p className="text-lg font-black">
+                {roleTestResult.success
+                  ? `HTTP 200 Success — Access Granted`
+                  : `HTTP 403 Forbidden — Expected Security Segregation`}
               </p>
-              <p className="text-base mt-0.5">{roleTestResult.message}</p>
+              <p className="text-base font-semibold">{roleTestResult.message}</p>
+              <p className="text-sm text-slate-700 pt-1">
+                {roleTestResult.success ? (
+                  <span>
+                    Your current active role (<strong>{user?.role}</strong>) satisfies the Spring Boot requirement for this endpoint.
+                  </span>
+                ) : (
+                  <span>
+                    This endpoint requires role <strong>{roleTestResult.testedRole?.toUpperCase()}</strong>, but you are signed in as <strong>{user?.role}</strong>. Spring Security's <code className="bg-white/80 px-1.5 py-0.5 rounded text-xs">@PreAuthorize</code> strictly blocked access to prevent unauthorized role escalation.
+                  </span>
+                )}
+              </p>
             </div>
           </div>
         )}
