@@ -14,8 +14,11 @@ RUN mvn clean package -DskipTests -B
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
-# Create non-root user for security
-RUN addgroup -S dearhand && adduser -S dearhand -G dearhand
+# Create non-root user and grant permissions
+RUN addgroup -S dearhand && adduser -S dearhand -G dearhand && \
+    mkdir -p /app/uploads/documents && \
+    chown -R dearhand:dearhand /app
+
 USER dearhand
 
 COPY --from=builder --chown=dearhand:dearhand /app/target/dearhand-backend-0.0.1-SNAPSHOT.jar app.jar
