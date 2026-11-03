@@ -39,7 +39,7 @@ export default function LoginPage({ onNavigateRegister, onSuccess }) {
           </div>
           <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">Sign In</h2>
           <p className="text-base text-slate-600 mt-1">
-            Access your family bookings or helper portal
+            Access your helpseeker bookings or helper portal
           </p>
         </div>
 
@@ -123,7 +123,7 @@ export default function LoginPage({ onNavigateRegister, onSuccess }) {
               onClick={() => fillCredentials('rohan.rao@example.com', 'Family@123')}
               className="px-2.5 py-2 bg-blue-50 hover:bg-blue-100 text-blue-900 border border-blue-200 rounded-lg text-sm font-semibold min-h-[44px]"
             >
-              Family
+              Helpseeker
             </button>
             <button
               type="button"

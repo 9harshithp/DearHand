@@ -102,7 +102,7 @@ export default function DashboardPage({
                   : 'bg-blue-100 text-blue-900 border border-blue-300'
               }`}
             >
-              {user?.role} Account
+              {user?.role === 'FAMILY' ? 'HELPSEEKER' : user?.role} Account
             </span>
           </div>
           <p className="text-base text-slate-600">
