@@ -40,6 +40,9 @@ public class Parent extends BaseEntity {
     @Column(name = "care_notes", columnDefinition = "TEXT")
     private String careNotes;
 
+    @Column(name = "medical_history", columnDefinition = "TEXT")
+    private String medicalHistory;
+
     @Column(name = "emergency_contact_name", nullable = false, length = 100)
     private String emergencyContactName;
 

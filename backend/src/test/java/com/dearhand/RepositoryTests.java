@@ -82,6 +82,7 @@ class RepositoryTests {
                 .city("Mysuru")
                 .language("Kannada")
                 .careNotes("Needs assistance with mobility")
+                .medicalHistory("Hypertension, prior cardiac stent (2019)")
                 .emergencyContactName("Kavitha Ramesh")
                 .emergencyContactPhone("+919988776655")
                 .build();
@@ -91,6 +92,7 @@ class RepositoryTests {
         List<Parent> parents = parentRepository.findByFamilyUserId(savedFamily.getId());
         assertThat(parents).hasSize(1);
         assertThat(parents.get(0).getName()).isEqualTo("Mr. Ramesh & Parvathi");
+        assertThat(parents.get(0).getMedicalHistory()).isEqualTo("Hypertension, prior cardiac stent (2019)");
     }
 
     @Test

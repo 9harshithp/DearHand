@@ -34,6 +34,8 @@ public class ParentRequest {
 
     private String careNotes;
 
+    private String medicalHistory;
+
     @NotBlank(message = "Emergency contact name is required")
     private String emergencyContactName;
 

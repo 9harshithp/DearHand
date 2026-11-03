@@ -44,6 +44,7 @@ public class ParentService {
                 .city(request.getCity() != null ? request.getCity().trim() : "Mysuru")
                 .language(request.getLanguage() != null ? request.getLanguage().trim() : "Kannada")
                 .careNotes(request.getCareNotes())
+                .medicalHistory(request.getMedicalHistory() != null ? request.getMedicalHistory().trim() : null)
                 .emergencyContactName(request.getEmergencyContactName().trim())
                 .emergencyContactPhone(request.getEmergencyContactPhone().trim())
                 .build();
@@ -68,6 +69,7 @@ public class ParentService {
         if (request.getCity() != null) parent.setCity(request.getCity().trim());
         if (request.getLanguage() != null) parent.setLanguage(request.getLanguage().trim());
         parent.setCareNotes(request.getCareNotes());
+        parent.setMedicalHistory(request.getMedicalHistory() != null ? request.getMedicalHistory().trim() : null);
         parent.setEmergencyContactName(request.getEmergencyContactName().trim());
         parent.setEmergencyContactPhone(request.getEmergencyContactPhone().trim());
 
@@ -97,6 +99,7 @@ public class ParentService {
                 .city(parent.getCity())
                 .language(parent.getLanguage())
                 .careNotes(parent.getCareNotes())
+                .medicalHistory(parent.getMedicalHistory())
                 .emergencyContactName(parent.getEmergencyContactName())
                 .emergencyContactPhone(parent.getEmergencyContactPhone())
                 .createdAt(parent.getCreatedAt())

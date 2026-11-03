@@ -116,6 +116,7 @@ class BookingServiceTests {
                 .city("Mysuru")
                 .language("Kannada")
                 .careNotes("Mild arthritis, needs arm support when walking")
+                .medicalHistory("Hypertension (10 yrs), Type 2 Diabetes, on Metformin and Telmisartan. No known drug allergies.")
                 .emergencyContactName("Kavitha Rao")
                 .emergencyContactPhone("+919988112233")
                 .build();
@@ -127,7 +128,45 @@ class BookingServiceTests {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.name").value("Mr. Gopal Rao"))
                 .andExpect(jsonPath("$.city").value("Mysuru"))
-                .andExpect(jsonPath("$.age").value(75));
+                .andExpect(jsonPath("$.age").value(75))
+                .andExpect(jsonPath("$.medicalHistory").value("Hypertension (10 yrs), Type 2 Diabetes, on Metformin and Telmisartan. No known drug allergies."));
+    }
+
+    @Test
+    @DisplayName("PUT /api/v1/parents/{id} - Family updates parent profile including medical history")
+    void shouldUpdateParentProfileWithMedicalHistory() throws Exception {
+        Parent parent = parentRepository.save(Parent.builder()
+                .familyUser(family1)
+                .name("Mrs. Lakshmi")
+                .age(71)
+                .address("Kuvempunagar, Mysuru")
+                .city("Mysuru")
+                .language("Kannada")
+                .careNotes("Requires walking support")
+                .medicalHistory("Initial: mild hypertension")
+                .emergencyContactName("Kavitha Rao")
+                .emergencyContactPhone("+919988112233")
+                .build());
+
+        ParentRequest updateReq = ParentRequest.builder()
+                .name("Mrs. Lakshmi")
+                .age(71)
+                .address("Kuvempunagar, Mysuru")
+                .city("Mysuru")
+                .language("Kannada")
+                .careNotes("Requires walking support and evening medication reminder")
+                .medicalHistory("Hypertension, Asthma (uses Inhaler as needed), Penicillin allergy")
+                .emergencyContactName("Kavitha Rao")
+                .emergencyContactPhone("+919988112233")
+                .build();
+
+        mockMvc.perform(put("/api/v1/parents/" + parent.getId())
+                .header("Authorization", "Bearer " + family1Jwt)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateReq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.medicalHistory").value("Hypertension, Asthma (uses Inhaler as needed), Penicillin allergy"))
+                .andExpect(jsonPath("$.careNotes").value("Requires walking support and evening medication reminder"));
     }
 
     @Test

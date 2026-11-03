@@ -20,6 +20,7 @@ public class ParentDto {
     private String city;
     private String language;
     private String careNotes;
+    private String medicalHistory;
     private String emergencyContactName;
     private String emergencyContactPhone;
     private Instant createdAt;
