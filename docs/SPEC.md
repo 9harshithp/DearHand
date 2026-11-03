@@ -37,7 +37,7 @@ The MVP covers the full booking loop: apply, approve, book, match, pay, visit, r
 | Feature | Phase | Notes |
 | :--- | :--- | :--- |
 | Family sign up and login | MVP | Phone or email with password; OTP can follow |
-| Parent profile | MVP | Address, language, care notes written by the family, emergency contacts |
+| Parent profile | MVP | Address, language, care notes, medical history written by the family, emergency contacts |
 | Helper application and profile | MVP | Documents, languages, skills, driving details |
 | Admin approval of helpers | MVP | Nobody is bookable until approved |
 | Booking: per task and day packages | MVP | Date, time, address, task notes |
@@ -138,7 +138,7 @@ MySQL 8 with Flyway migrations. Each table has auto-increment `id`, `created_at`
 
 ### Tables and Key Columns
 - `users`: role (`family`, `helper`, `admin`), name, phone, email, password_hash, status
-- `parents`: family_user_id, name, age, address, city, language, care_notes, emergency_contact_name, emergency_contact_phone
+- `parents`: family_user_id, name, age, address, city, language, care_notes, medical_history, emergency_contact_name, emergency_contact_phone
 - `helper_profiles`: user_id, bio, languages, skills, has_licence, licence_no, licence_expiry, vehicle_type, years_experience, status (`applied`, `verified`, `approved`, `suspended`), rating_avg
 - `helper_documents`: helper_id, type, file_key, verified_by, verified_at
 - `packages`: name, type (`task`, `half_day`, `full_day`, `monthly`), duration_hours, base_price, active
