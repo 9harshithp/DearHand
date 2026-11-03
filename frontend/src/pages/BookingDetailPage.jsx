@@ -14,7 +14,8 @@ import {
   ArrowLeft,
   Phone,
   CreditCard,
-  Ban
+  Ban,
+  HeartPulse
 } from 'lucide-react';
 import PaymentModal from '../components/PaymentModal';
 import PaymentReceiptModal from '../components/PaymentReceiptModal';
@@ -353,6 +354,15 @@ export default function BookingDetailPage({ bookingId, onBack, onNavigatePayment
               <MapPin className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
               <span>{booking.address}</span>
             </p>
+            {booking.parent?.medicalHistory && (
+              <div className="mt-2 p-3 bg-rose-50 border border-rose-200 rounded-xl text-sm text-rose-950 flex items-start gap-2">
+                <HeartPulse className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <strong className="block text-rose-900 font-bold mb-0.5">Medical History & Conditions:</strong>
+                  <span className="text-slate-800">{booking.parent.medicalHistory}</span>
+                </div>
+              </div>
+            )}
             {booking.parent?.careNotes && (
               <div className="mt-2 p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700">
                 <strong>Care Instructions:</strong> {booking.parent.careNotes}

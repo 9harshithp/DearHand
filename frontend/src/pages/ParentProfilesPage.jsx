@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiRequest } from '../api/client';
-import { Users, Plus, Edit2, CheckCircle2, AlertCircle, ArrowLeft, Heart, Phone, MapPin } from 'lucide-react';
+import { Users, Plus, Edit2, CheckCircle2, AlertCircle, ArrowLeft, Heart, HeartPulse, Phone, MapPin } from 'lucide-react';
 
 export default function ParentProfilesPage({ onBack }) {
   const [parents, setParents] = useState([]);
@@ -18,6 +18,7 @@ export default function ParentProfilesPage({ onBack }) {
   const [city, setCity] = useState('Mysuru');
   const [language, setLanguage] = useState('Kannada, English');
   const [careNotes, setCareNotes] = useState('');
+  const [medicalHistory, setMedicalHistory] = useState('');
   const [emergencyContactName, setEmergencyContactName] = useState('');
   const [emergencyContactPhone, setEmergencyContactPhone] = useState('+91');
 
@@ -45,6 +46,7 @@ export default function ParentProfilesPage({ onBack }) {
     setCity('Mysuru');
     setLanguage('Kannada, English');
     setCareNotes('');
+    setMedicalHistory('');
     setEmergencyContactName('');
     setEmergencyContactPhone('+91');
     setIsAdding(true);
@@ -60,6 +62,7 @@ export default function ParentProfilesPage({ onBack }) {
     setCity(p.city || 'Mysuru');
     setLanguage(p.language || 'Kannada');
     setCareNotes(p.careNotes || '');
+    setMedicalHistory(p.medicalHistory || '');
     setEmergencyContactName(p.emergencyContactName);
     setEmergencyContactPhone(p.emergencyContactPhone);
     setIsAdding(true);
@@ -80,6 +83,7 @@ export default function ParentProfilesPage({ onBack }) {
       city,
       language,
       careNotes,
+      medicalHistory,
       emergencyContactName,
       emergencyContactPhone,
     };
@@ -246,15 +250,32 @@ export default function ParentProfilesPage({ onBack }) {
             </div>
 
             <div>
+              <label className="block text-base font-bold text-slate-900 mb-1" htmlFor="medical-history">
+                Medical History & Health Conditions
+              </label>
+              <textarea
+                id="medical-history"
+                rows={3}
+                value={medicalHistory}
+                onChange={(e) => setMedicalHistory(e.target.value)}
+                placeholder="e.g. Hypertension, Type 2 Diabetes, cardiac history/stent, penicillin allergy, mobility limitations, hearing aid..."
+                className="w-full px-4 py-2.5 text-base text-slate-900 bg-slate-50 border-2 border-slate-300 rounded-xl focus:bg-white focus:border-teal-600"
+              />
+              <p className="text-sm text-slate-500 mt-1">
+                Shared securely with assigned helpers so they are aware of important health context and precautions.
+              </p>
+            </div>
+
+            <div>
               <label className="block text-base font-bold text-slate-900 mb-1" htmlFor="care-notes">
-                Special Care Notes & Medical Context
+                Special Care Notes & Daily Routine
               </label>
               <textarea
                 id="care-notes"
                 rows={2}
                 value={careNotes}
                 onChange={(e) => setCareNotes(e.target.value)}
-                placeholder="e.g. Uses walking stick, doctor checkup every Tuesday at Apollo, takes BP tablets at 10 AM..."
+                placeholder="e.g. Uses walking stick, doctor checkup every Tuesday at Apollo, morning walks, tea preferences..."
                 className="w-full px-4 py-2.5 text-base text-slate-900 bg-slate-50 border-2 border-slate-300 rounded-xl focus:bg-white focus:border-teal-600"
               />
             </div>
@@ -358,9 +379,19 @@ export default function ParentProfilesPage({ onBack }) {
                     <span>{p.address}, {p.city}</span>
                   </p>
 
+                  {p.medicalHistory && (
+                    <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-sm text-rose-950 flex items-start gap-2.5">
+                      <HeartPulse className="w-5 h-5 text-rose-600 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <strong className="block text-rose-900 font-bold mb-0.5">Medical History & Conditions:</strong>
+                        <span className="text-slate-800">{p.medicalHistory}</span>
+                      </div>
+                    </div>
+                  )}
+
                   {p.careNotes && (
-                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900">
-                      <strong>Care Notes:</strong> {p.careNotes}
+                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-950">
+                      <strong className="text-amber-900">Care Notes:</strong> {p.careNotes}
                     </div>
                   )}
                 </div>
