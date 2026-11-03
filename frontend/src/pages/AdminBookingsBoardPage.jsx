@@ -236,7 +236,7 @@ export default function AdminBookingsBoardPage({ onBackToDashboard, onNavigateBo
                         {b.parent?.name}
                       </h4>
                       <p className="text-sm font-semibold text-slate-500">
-                        Booked by {b.familyName} ({b.familyPhone || 'Family'})
+                        Booked by {b.familyName} ({b.familyPhone || 'HelpSeeker'})
                       </p>
                     </div>
 

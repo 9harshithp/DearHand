@@ -66,7 +66,7 @@ export default function RegisterPage({ onNavigateLogin, onSuccess }) {
             <div className="flex items-center gap-2 mb-1">
               <HeartHandshake className={`w-5 h-5 ${role === 'FAMILY' ? 'text-teal-700' : 'text-slate-500'}`} />
               <span className={`font-bold text-base ${role === 'FAMILY' ? 'text-teal-900' : 'text-slate-700'}`}>
-                Helpseeker
+                HelpSeeker
               </span>
             </div>
             <p className="text-xs text-slate-600">
@@ -164,7 +164,7 @@ export default function RegisterPage({ onNavigateLogin, onSuccess }) {
             disabled={loading}
             className="w-full bg-teal-600 hover:bg-teal-700 text-white font-bold py-3.5 px-6 rounded-xl min-h-[44px] flex items-center justify-center gap-2 shadow-md transition-colors text-lg disabled:opacity-50 mt-2"
           >
-            {loading ? 'Creating Account...' : `Register as ${role === 'FAMILY' ? 'Helpseeker' : 'Helper'}`}
+            {loading ? 'Creating Account...' : `Register as ${role === 'FAMILY' ? 'HelpSeeker' : 'Helper'}`}
             <ArrowRight className="w-5 h-5" />
           </button>
         </form>
