@@ -16,6 +16,18 @@
 
 </div>
 
+------
+
+## 🖥️ Application Showcase
+
+<div align="center">
+
+<img src="./dearhand-homepage.png" width="100%" alt="DearHand Homepage" />
+
+*DearHand — Connecting families with trusted elderly care helpers in Mysuru.*
+
+</div>
+
 ---
 
 ## 📌 Project Overview
